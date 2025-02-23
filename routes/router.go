@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"log/slog"
 	"net"
 	"os"
@@ -17,29 +18,25 @@ import (
 	natsserver "github.com/nats-io/nats-server/v2/server"
 )
 
-func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (cleanup func() error, err error) {
+func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (err error) {
 	natsPort, err := getFreeNatsPort()
 	if err != nil {
-		return nil, fmt.Errorf("error getting free port: %w", err)
+		return fmt.Errorf("error obtaining NATS port: %w", err)
 	}
 
 	ns, err := embeddednats.New(ctx, embeddednats.WithNATSServerOptions(&natsserver.Options{
 		JetStream: true,
+		NoSigs:    true,
 		Port:      natsPort,
+		StoreDir:  "data/nats",
 	}))
 
 	if err != nil {
-		return nil, fmt.Errorf("error creating embedded nats server: %w", err)
+		return fmt.Errorf("error creating embedded nats server: %w", err)
 	}
 
 	ns.WaitForServer()
-	logger.Info(fmt.Sprintf("Starting NATS on port :%d", natsPort))
-
-	cleanup = func() error {
-		return errors.Join(
-			ns.Close(),
-		)
-	}
+	logger.Info(fmt.Sprintf("starting NATS on port :%d", natsPort))
 
 	sessionStore := sessions.NewCookieStore([]byte("session-secret"))
 	sessionStore.MaxAge(int(24 * time.Hour / time.Second))
@@ -50,16 +47,17 @@ func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (c
 		setupMonitorRoute(logger, router),
 		setupSortableRoute(router),
 	); err != nil {
-		return cleanup, fmt.Errorf("error setting up routes: %w", err)
+		return fmt.Errorf("error setting up routes: %w", err)
 	}
 
-	return cleanup, nil
+	return nil
 }
 
 func getFreeNatsPort() (int, error) {
 	if p, ok := os.LookupEnv("NATS_PORT"); ok {
 		natsPort, err := strconv.Atoi(p)
 		if err != nil {
+			log.Println("could not convert NATS_PORT")
 			return 0, err
 		}
 		if isPortFree(natsPort) {
@@ -71,10 +69,15 @@ func getFreeNatsPort() (int, error) {
 
 func isPortFree(port int) bool {
 	address := fmt.Sprintf(":%d", port)
+
 	ln, err := net.Listen("tcp", address)
 	if err != nil {
 		return false
 	}
-	_ = ln.Close()
+
+	if err := ln.Close(); err != nil {
+		return false
+	}
+
 	return true
 }

@@ -3,6 +3,9 @@
     "build.buildFlags": ["-tags=dev"]
   },
   "go.useLanguageServer": true,
+  "tailwindCSS.includeLanguages": {
+    "templ": "html"
+  },
   "[templ]": {
     "editor.defaultFormatter": "a-h.templ"
   }

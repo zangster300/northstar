@@ -5,8 +5,9 @@
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
 		"a-h.templ",
+		"bradlc.vscode-tailwindcss",
 		"golang.go",
-		"bradlc.vscode-tailwindcss"
+		"runem.lit-plugin"
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

@@ -1,48 +1,73 @@
 version: "3"
 
 env:
-  STATIC_DIR: "web/static"
   NATS_PORT: 4222
+  STATIC_DIR: "web/static"
 
 tasks:
+  tools:
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@v0.3.833
+      - go install github.com/air-verse/air@v1.61.7
+      - go install github.com/go-delve/delve/cmd/dlv@v1.24.0
+      - go install github.com/go-task/task/v3/cmd/task@latest
+
   # The `build:` tasks below are used together for "production" builds of your project
   build:templ:
     cmds:
-      - go run github.com/a-h/templ/cmd/templ@v0.3.819 generate -v
+      - templ generate
+    sources:
+      - "**/*.templ"
+    generates:
+      - "**/*_templ.go"
 
   build:styles:
     cmds:
       - pnpm exec tailwindcss -c tailwind.config.js -i web/styles/styles.css -o $STATIC_DIR/index.css
+    sources:
+      - "./web/**/*.html"
+      - "./web/**/*.ts"
+      - "./web/**/*.templ"
+      - "./web/**/*.go"
+    generates:
+      - "{{.STATIC_DIR}}/index.js"
 
   build:esbuild:
     cmds:
       - pnpm exec esbuild web/libs/datastar/index.ts --bundle --outdir=$STATIC_DIR
+    sources:
+      - "web/libs/datastar/index.ts"
+    generates:
+      - "{{.STATIC_DIR}}/index.js"
 
   build:lit-html:
     cmds:
       - pnpm -r --filter=lit-html build
+    sources:
+      - "web/libs/lit-html/src/**/*.ts"
+    generates:
+      - "{{.STATIC_DIR}}/lit-html*"
 
   build:
     cmds:
       - go build -o bin/main .
     deps:
-      - build:styles
-      - build:templ
       - build:lit-html
+      - build:templ
       - build:esbuild
-    parallel: true
+      - build:styles
 
   # Use this task to debug your project with the delve debugger
   debug:
     cmds:
-      - go run github.com/go-delve/delve/cmd/dlv@v1.23.1 exec ./bin/main
+      - dlv exec ./bin/main
     deps:
       - build
 
-  # The `live:` tasks below are used together for "dev" builds, and will hot-reload your entire project when there are code changes
+  # The `live:` tasks below are used together for "dev" builds and will live-reload your entire project
   live:templ:
     cmds:
-      - go run github.com/a-h/templ/cmd/templ@v0.3.819 generate --watch --proxy="http://localhost:8080" --open-browser=false -v
+      - templ generate --watch --proxy="http://localhost:8080" --open-browser=false
 
   live:styles:
     cmds:
@@ -59,25 +84,29 @@ tasks:
   live:server:
     cmds:
       - |
-        go run github.com/air-verse/air@v1.52.3 \
-        --build.cmd "go build -tags dev -o tmp/bin/main" \
-        --build.bin "tmp/bin/main" \
-        --build.delay "20" \
-        --build.exclude_dir "node_modules,data,public" \
-        --build.include_ext "go" \
-        --build.stop_on_error "false" \
-        --misc.clean_on_exit true
+        air  \
+         -build.cmd "go build -tags dev -o tmp/bin/main" \
+         -build.bin "tmp/bin/main" \
+         -build.delay "100" \
+         -build.exclude_dir "data,node_modules,web/libs/datastar/node_modules,web/libs/lit-html/node_modules" \
+         -build.include_ext "go" \
+         -build.stop_on_error "false" \
+         -build.send_interrupt "true" \
+         -build.kill_delay "200" \
+         -misc.clean_on_exit "true"
 
   live:reload:
     cmds:
       - |
-        go run github.com/air-verse/air@v1.52.3 \
-        --build.cmd "go run github.com/a-h/templ/cmd/templ@v0.3.819 generate --notify-proxy" \
-        --build.bin "true" \
-        --build.delay "100" \
-        --build.exclude_dir "" \
-        --build.include_dir "$STATIC_DIR" \
-        --build.include_ext "js,css"
+        air \
+        -build.cmd "templ generate --notify-proxy" \
+        -build.bin "true" \
+        -build.delay "300" \
+        -build.exclude_dir "" \
+        -build.include_dir "$STATIC_DIR" \
+        -build.include_ext "js,css" \
+        -build.send_interrupt "true" \
+        -build.kill_delay "200"
 
   live:
     deps:
@@ -85,8 +114,8 @@ tasks:
       - live:styles
       - live:lit-html
       - live:esbuild
-      - live:reload
       - live:server
+      - live:reload
 
   run:
     cmds:

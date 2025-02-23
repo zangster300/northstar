@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -24,32 +25,23 @@ func main() {
 		}
 		return "8080"
 	}
-	logger.Info("Starting Server on port :" + getPort())
-	defer logger.Info("Stopping Server")
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	logger.Info("starting server on port :" + getPort())
+	defer logger.Info("stopping server")
 
-	if err := run(ctx, logger, getPort()); err != nil {
-		logger.Error("Error running server", slog.Any("err", err))
+	if err := run(context.Background(), logger, getPort()); err != nil && err != http.ErrServerClosed {
+		logger.Error("error running server", slog.Any("error", err))
 		os.Exit(1)
 	}
 }
 
 func run(ctx context.Context, logger *slog.Logger, port string) error {
-	g, ctx := errgroup.WithContext(ctx)
+	sctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-	g.Go(startServer(ctx, logger, port))
+	eg, ctx := errgroup.WithContext(sctx)
 
-	if err := g.Wait(); err != nil {
-		return fmt.Errorf("error running server: %w", err)
-	}
-
-	return nil
-}
-
-func startServer(ctx context.Context, logger *slog.Logger, port string) func() error {
-	return func() error {
+	eg.Go(func() error {
 		router := chi.NewMux()
 
 		router.Use(
@@ -59,9 +51,7 @@ func startServer(ctx context.Context, logger *slog.Logger, port string) func() e
 
 		router.Handle("/static/*", http.StripPrefix("/static/", static(logger)))
 
-		cleanup, err := routes.SetupRoutes(ctx, logger, router)
-		defer cleanup()
-		if err != nil {
+		if err := routes.SetupRoutes(ctx, logger, router); err != nil {
 			return fmt.Errorf("error setting up routes: %w", err)
 		}
 
@@ -72,9 +62,17 @@ func startServer(ctx context.Context, logger *slog.Logger, port string) func() e
 
 		go func() {
 			<-ctx.Done()
-			srv.Shutdown(context.Background())
+			if err := srv.Shutdown(context.Background()); err != nil {
+				log.Fatalf("error during shutdown: %v", err)
+			}
 		}()
 
 		return srv.ListenAndServe()
+	})
+
+	if err := eg.Wait(); err != nil {
+		return err
 	}
+
+	return nil
 }

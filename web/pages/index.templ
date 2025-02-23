@@ -15,10 +15,7 @@ templ Index(title string) {
 					<li class="hover:text-primary"><a href="/sortable">Sortable Example</a></li>
 				</ul>
 			</nav>
-			<div id="todos-container" data-on-load={ datastar.GetSSE("/api/todos") }>
-				<p>Todos Example</p>
-				<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
-			</div>
+			<div id="todos-container" data-on-load={ datastar.GetSSE("/api/todos") }></div>
 		</div>
 	}
 }

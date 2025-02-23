@@ -19,17 +19,18 @@ git clone https://github.com/zangster300/northstar.git
 2. Install Dependencies
 
 ```shell
-pnpm install
 go mod tidy
+go run github.com/go-task/task/v3/cmd/task@latest tools
+pnpm install
 ```
 
 3. Create 🚀
 
 # Development
 
-Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/commands-and-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
+Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
 
-Use the [live task](./Taskfile.yml#L78) from the [Taskfile](https://taskfile.dev/) to start the server
+Use the [live task](./Taskfile.yml#L105) from the [Taskfile](https://taskfile.dev/) to start the server
 
 ```shell
 task live
@@ -37,9 +38,12 @@ task live
 
 Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite web browser to begin
 
+> [!WARNING]  
+> Currently tracking some buggy behavior where the tasks associated with live-reload will stick around, if you are experiencing this utilize `lsof`, `ps` and `kill` to find and remove the associated processes
+
 ## Debugging
 
-The [debug task](<(./Taskfile.yml#L33)>) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
+The [debug task](./Taskfile.yml#L55) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
 
 ```shell
 task debug
@@ -70,7 +74,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#L26) will assemble and build a binary [with static assets embedded](./static_prod.go#L19)
+The `task build` [task](./Taskfile.yml#L45) will assemble and build a binary [with static assets embedded](./static_prod.go#L19)
 
 ## Docker
 
@@ -99,7 +103,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./handlers/router.go#L16) file
+An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./routes/router.go#L27) file
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 

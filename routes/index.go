@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"time"
 
-	datastar "github.com/starfederation/datastar/sdk/go"
-
 	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/embeddednats"
+	datastar "github.com/starfederation/datastar/sdk/go"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
@@ -92,7 +92,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		pages.Index("HYPERMEDIA RULES").Render(r.Context(), w)
+		pages.Index("Northstar").Render(r.Context(), w)
 	})
 
 	router.Route("/api", func(apiRouter chi.Router) {
@@ -335,12 +335,13 @@ func MustJSONMarshal(v any) string {
 }
 
 func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
-
 	sess, err := store.Get(r, "connections")
 	if err != nil {
 		return "", fmt.Errorf("failed to get session: %w", err)
 	}
+
 	id, ok := sess.Values["id"].(string)
+
 	if !ok {
 		id = toolbelt.NextEncodedID()
 		sess.Values["id"] = id
@@ -348,5 +349,6 @@ func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWrite
 			return "", fmt.Errorf("failed to save session: %w", err)
 		}
 	}
+
 	return id, nil
 }
