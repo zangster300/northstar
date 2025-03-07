@@ -1,6 +1,6 @@
 {
   "name": "northstar",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Nicholas Zanghi",
   "type": "module",
   "devDependencies": {

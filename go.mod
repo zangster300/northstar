@@ -17,7 +17,7 @@ require (
 	github.com/nats-io/nats.go v1.39.1
 	github.com/samber/lo v1.49.1
 	github.com/shirou/gopsutil/v4 v4.25.1
-	github.com/starfederation/datastar v1.0.0-beta.7
+	github.com/starfederation/datastar v1.0.0-beta.9
 )
 
 require (

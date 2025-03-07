@@ -33,8 +33,8 @@ importers:
   web/libs/datastar:
     dependencies:
       '@starfederation/datastar':
-        specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7
+        specifier: 1.0.0-beta.9
+        version: 1.0.0-beta.9
 
   web/libs/lit-html:
     dependencies:
@@ -48,15 +48,9 @@ importers:
       '@types/sortablejs':
         specifier: ^1.15.8
         version: 1.15.8
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.4.20(postcss@8.5.3)
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
-      postcss:
-        specifier: ^8.5.3
-        version: 8.5.3
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -616,8 +610,8 @@ packages:
   '@rushstack/ts-command-line@4.23.5':
     resolution: {integrity: sha512-jg70HfoK44KfSP3MTiL5rxsZH7X1ktX3cZs9Sl8eDu1/LxJSbPsh0MOFRC710lIuYYSgxWjI5AjbCBAl7u3RxA==}
 
-  '@starfederation/datastar@1.0.0-beta.7':
-    resolution: {integrity: sha512-mt3nnhn/Nz4W/TKYEK/C5BTeoDMVG5hmlTP3FP5dy/zhpfAsAcYwOLVhdby73AMdJo51dffLuC4Ik5M4D4Y+MA==}
+  '@starfederation/datastar@1.0.0-beta.9':
+    resolution: {integrity: sha512-KFNUahHd3zqraw2d0+UAHA2Qv7791KFdo4NmNzAmt2DrHk1jZ/AYNh3/nDImAVpDt3fXej7kFa1kcj7Yk4Uojg==}
 
   '@tailwindcss/cli@4.0.8':
     resolution: {integrity: sha512-nFN0QjibH8Yhd028TP+WnStfEG0Bw9uS8ojqJNeEo4RfXH8Mfi42Y9lvhl3yPcii8/xt0/Mq/kZywjvpkcgLJg==}
@@ -1602,7 +1596,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@starfederation/datastar@1.0.0-beta.7': {}
+  '@starfederation/datastar@1.0.0-beta.9': {}
 
   '@tailwindcss/cli@4.0.8':
     dependencies:
