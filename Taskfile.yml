@@ -7,12 +7,12 @@ env:
 tasks:
   tools:
     cmds:
-      - go install github.com/a-h/templ/cmd/templ@v0.3.833
+      - go install github.com/a-h/templ/cmd/templ@v0.3.857
       - go install github.com/air-verse/air@v1.61.7
-      - go install github.com/go-delve/delve/cmd/dlv@v1.24.0
+      - go install github.com/go-delve/delve/cmd/dlv@v1.24.1
       - go install github.com/go-task/task/v3/cmd/task@latest
 
-  # The `build:` tasks below are used together for "production" builds of your project
+  # The `build:` tasks below are used together for production builds of a project
   build:templ:
     cmds:
       - templ generate
@@ -57,14 +57,14 @@ tasks:
       - build:esbuild
       - build:styles
 
-  # Use this task to debug your project with the delve debugger
+  # Use this task to debug with the delve debugger
   debug:
     cmds:
       - dlv exec ./bin/main
     deps:
       - build
 
-  # The `live:` tasks below are used together for "dev" builds and will live-reload your entire project
+  # The `live:` tasks below are used together for development builds and will live-reload the entire project
   live:templ:
     cmds:
       - templ generate --watch --proxy="http://localhost:8080" --open-browser=false

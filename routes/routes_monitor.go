@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/zangster300/northstar/web/pages"
@@ -43,8 +44,8 @@ func setupMonitorRoute(logger *slog.Logger, router chi.Router) error {
 				}
 
 				memStats := pages.SystemMonitorSignals{
-					MemTotal:       fmt.Sprintf("%d", m.Total),
-					MemUsed:        fmt.Sprintf("%d", m.Used),
+					MemTotal:       humanize.Bytes(m.Total),
+					MemUsed:        humanize.Bytes(m.Used),
 					MemUsedPercent: fmt.Sprintf("%.2f%%", m.UsedPercent),
 				}
 

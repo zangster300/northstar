@@ -29,18 +29,36 @@ templ MonitorInitial() {
 			class="h-screen flex justify-center items-center"
 			data-signals="{memTotal:'', memUsed:'', memUsedPercent:'', cpuUser:'', cpuSystem:'', cpuIdle:''}"
 		>
-			<div class="border border-primary rounded flex gap-8 p-8">
-				<div id="mem" class="flex flex-col">
+			<div class="border border-primary rounded flex gap-10 p-2">
+				<div id="mem" class="flex flex-col min-w-40 max-w-40">
 					<h1 class="text-center pb-2 text-xl">Memory</h1>
-					<p>Total: <span data-text="$memTotal"></span></p>
-					<p>Used: <span data-text="$memUsed"></span></p>
-					<p>Used (%): <span data-text="$memUsedPercent"></span></p>
+					<p class="flex justify-between">
+						<span>Total:</span>
+						<span data-text="$memTotal"></span>
+					</p>
+					<p class="flex justify-between">
+						<span>Used:</span>
+						<span data-text="$memUsed"></span>
+					</p>
+					<p class="flex justify-between">
+						<span>%: </span>
+						<span data-text="$memUsedPercent"></span>
+					</p>
 				</div>
-				<div id="cpu" class="flex flex-col">
+				<div id="cpu" class="flex flex-col min-w-40 max-w-40">
 					<h1 class="text-center pb-2 text-xl">CPU</h1>
-					<p>User: <span data-text="$cpuUser"></span></p>
-					<p>System: <span data-text="$cpuSystem"></span></p>
-					<p>Idle: <span data-text="$cpuIdle"></span></p>
+					<p class="flex justify-between">
+						<span>User:</span>
+						<span data-text="$cpuUser"></span>
+					</p>
+					<p class="flex justify-between">
+						<span>System:</span>
+						<span data-text="$cpuSystem"></span>
+					</p>
+					<p class="flex justify-between">
+						<span>Idle:</span>
+						<span data-text="$cpuIdle"></span>
+					</p>
 				</div>
 			</div>
 		</div>

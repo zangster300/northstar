@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"net"
 	"os"
@@ -57,8 +56,7 @@ func getFreeNatsPort() (int, error) {
 	if p, ok := os.LookupEnv("NATS_PORT"); ok {
 		natsPort, err := strconv.Atoi(p)
 		if err != nil {
-			log.Println("could not convert NATS_PORT")
-			return 0, err
+			return 0, fmt.Errorf("error parsing NATS_PORT: %w", err)
 		}
 		if isPortFree(natsPort) {
 			return natsPort, nil

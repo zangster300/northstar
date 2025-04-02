@@ -1,4 +1,7 @@
 {
+  "emmet.includeLanguages": {
+    "templ": "html"
+  },
   "gopls": {
     "build.buildFlags": ["-tags=dev"]
   },

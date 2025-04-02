@@ -29,8 +29,8 @@
   "devDependencies": {
     "@types/sortablejs": "^1.15.8",
     "picocolors": "^1.1.1",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.1",
-    "vite-plugin-dts": "^4.5.0"
+    "typescript": "^5.8.2",
+    "vite": "^6.2.4",
+    "vite-plugin-dts": "^4.5.3"
   }
 }

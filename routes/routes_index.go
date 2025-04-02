@@ -57,7 +57,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	resetMVC := func(mvc *components.TodoMVC) {
 		mvc.Mode = components.TodoViewModeAll
 		mvc.Todos = []*components.Todo{
-			{Text: "Learn a backend language", Completed: true},
+			{Text: "Learn any backend language", Completed: true},
 			{Text: "Learn Datastar", Completed: false},
 			{Text: "Create Hypermedia", Completed: false},
 			{Text: "???", Completed: false},
