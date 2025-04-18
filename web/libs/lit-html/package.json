@@ -23,14 +23,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lit": "^3.2.1",
+    "lit": "^3.3.0",
     "sortablejs": "^1.15.6"
   },
   "devDependencies": {
     "@types/sortablejs": "^1.15.8",
     "picocolors": "^1.1.1",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.2",
     "vite-plugin-dts": "^4.5.3"
   }
 }

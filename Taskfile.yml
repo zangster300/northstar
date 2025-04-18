@@ -5,17 +5,10 @@ env:
   STATIC_DIR: "web/static"
 
 tasks:
-  tools:
-    cmds:
-      - go install github.com/a-h/templ/cmd/templ@v0.3.857
-      - go install github.com/air-verse/air@v1.61.7
-      - go install github.com/go-delve/delve/cmd/dlv@v1.24.1
-      - go install github.com/go-task/task/v3/cmd/task@latest
-
   # The `build:` tasks below are used together for production builds of a project
   build:templ:
     cmds:
-      - templ generate
+      - go tool templ generate
     sources:
       - "**/*.templ"
     generates:
@@ -60,14 +53,14 @@ tasks:
   # Use this task to debug with the delve debugger
   debug:
     cmds:
-      - dlv exec ./bin/main
+      - go tool dlv exec ./bin/main
     deps:
       - build
 
   # The `live:` tasks below are used together for development builds and will live-reload the entire project
   live:templ:
     cmds:
-      - templ generate --watch --proxy="http://localhost:8080" --open-browser=false
+      - go tool templ generate --watch --proxy="http://localhost:8080" --open-browser=false
 
   live:styles:
     cmds:
@@ -84,7 +77,7 @@ tasks:
   live:server:
     cmds:
       - |
-        air  \
+        go tool air  \
          -build.cmd "go build -tags dev -o tmp/bin/main" \
          -build.bin "tmp/bin/main" \
          -build.delay "100" \
@@ -98,8 +91,8 @@ tasks:
   live:reload:
     cmds:
       - |
-        air \
-        -build.cmd "templ generate --notify-proxy" \
+        go tool air \
+        -build.cmd "go tool templ generate --notify-proxy" \
         -build.bin "true" \
         -build.delay "300" \
         -build.exclude_dir "" \
@@ -107,6 +100,8 @@ tasks:
         -build.include_ext "js,css" \
         -build.send_interrupt "true" \
         -build.kill_delay "200"
+    deps:
+      - live:server
 
   live:
     deps:
@@ -114,7 +109,6 @@ tasks:
       - live:styles
       - live:lit-html
       - live:esbuild
-      - live:server
       - live:reload
 
   run:
@@ -122,3 +116,7 @@ tasks:
       - ./bin/main
     deps:
       - build
+
+  default:
+    cmds:
+      - task: live

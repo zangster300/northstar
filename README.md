@@ -1,4 +1,4 @@
-# NORTHSTAR - A Hypermedia Application Starter Template
+# NORTHSTAR - A Hypermedia-Driven Application Starter Template
 
 # Stack
 
@@ -19,9 +19,8 @@ git clone https://github.com/zangster300/northstar.git
 2. Install Dependencies
 
 ```shell
-go mod tidy
-go run github.com/go-task/task/v3/cmd/task@latest tools
 pnpm install
+go mod tidy
 ```
 
 3. Create 🚀
@@ -30,23 +29,20 @@ pnpm install
 
 Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
 
-Use the [live task](./Taskfile.yml#L105) from the [Taskfile](https://taskfile.dev/) to start the server
+Use the [live task](./Taskfile.yml#L106) from the [Taskfile](https://taskfile.dev/) to start the server
 
 ```shell
-task live
+go tool task live
 ```
 
 Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite web browser to begin
 
-> [!WARNING]  
-> Currently tracking some buggy behavior where the tasks associated with live-reload will stick around, if you are experiencing this utilize `lsof`, `ps` and `kill` to find and remove the associated processes
-
 ## Debugging
 
-The [debug task](./Taskfile.yml#L55) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
+The [debug task](./Taskfile.yml#L54) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
 
 ```shell
-task debug
+go tool task debug
 ```
 
 ## IDE Support
@@ -65,7 +61,7 @@ a `Debug Main` configuration has been added to the [launch.json](./.vscode/launc
 # Starting the Server
 
 ```shell
-task run
+go tool task run
 ```
 
 Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite web browser
@@ -74,7 +70,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#L45) will assemble and build a binary [with static assets embedded](./static_prod.go#L19)
+The `task build` [task](./Taskfile.yml#L44) will assemble and build a binary [with static assets embedded](./static_prod.go#L19)
 
 ## Docker
 
@@ -98,7 +94,7 @@ Completely open to PR's and feature requests
 
 - [go](https://go.dev/)
 - [nats](https://docs.nats.io/)
-- [data-star sdk](https://github.com/starfederation/datastar/tree/develop/sdk)
+- [datastar sdk](https://github.com/starfederation/datastar/tree/develop/sdk)
 - [templ](https://templ.guide/)
 
 ### Embedded NATS
@@ -137,7 +133,7 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 
 [🔗 Web Components Setup](./web/libs/lit-html/README.md)
 
-## Hypermedia Architecture
+## HDA Required Reading 
 
 - [Hypermedia-Driven Applications](https://htmx.org/essays/hypermedia-driven-applications/)
 - [HTMX Sucks](https://htmx.org/essays/htmx-sucks/)
