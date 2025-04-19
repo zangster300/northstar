@@ -100,8 +100,6 @@ tasks:
         -build.include_ext "js,css" \
         -build.send_interrupt "true" \
         -build.kill_delay "200"
-    deps:
-      - live:server
 
   live:
     deps:
@@ -110,6 +108,7 @@ tasks:
       - live:lit-html
       - live:esbuild
       - live:reload
+      - live:server
 
   run:
     cmds:
