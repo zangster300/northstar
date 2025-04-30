@@ -17,7 +17,22 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: func() slog.Level {
+			logLvlStr := os.Getenv("LOG_LEVEL")
+			switch logLvlStr {
+			case "DEBUG":
+				return slog.LevelDebug
+			case "WARN":
+				return slog.LevelWarn
+			case "ERROR":
+				return slog.LevelError
+			default:
+				return slog.LevelInfo
+			}
+		}(),
+	}))
+	slog.SetDefault(logger)
 
 	getPort := func() string {
 		if p, ok := os.LookupEnv("PORT"); ok {
@@ -26,16 +41,16 @@ func main() {
 		return "8080"
 	}
 
-	logger.Info("starting server on port :" + getPort())
-	defer logger.Info("stopping server")
+	slog.Info("starting server on port :" + getPort())
+	defer slog.Info("stopping server")
 
-	if err := run(context.Background(), logger, getPort()); err != nil && err != http.ErrServerClosed {
-		logger.Error("error running server", slog.Any("error", err))
+	if err := run(context.Background(), getPort()); err != nil && err != http.ErrServerClosed {
+		slog.Error("error running server", slog.Any("error", err))
 		os.Exit(1)
 	}
 }
 
-func run(ctx context.Context, logger *slog.Logger, port string) error {
+func run(ctx context.Context, port string) error {
 	sctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
@@ -49,9 +64,9 @@ func run(ctx context.Context, logger *slog.Logger, port string) error {
 			middleware.Recoverer,
 		)
 
-		router.Handle("/static/*", http.StripPrefix("/static/", static(logger)))
+		router.Handle("/static/*", http.StripPrefix("/static/", static()))
 
-		if err := routes.SetupRoutes(ctx, logger, router); err != nil {
+		if err := routes.SetupRoutes(ctx, router); err != nil {
 			return fmt.Errorf("error setting up routes: %w", err)
 		}
 

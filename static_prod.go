@@ -16,7 +16,7 @@ import (
 var staticFS embed.FS
 var staticRootFS, _ = fs.Sub(staticFS, "web/static")
 
-func static(logger *slog.Logger) http.Handler {
-	logger.Debug("static assets are embedded")
+func static() http.Handler {
+	slog.Debug("static assets are embedded")
 	return hashFS.FileServer(staticRootFS)
 }

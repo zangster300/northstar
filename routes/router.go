@@ -17,7 +17,7 @@ import (
 	natsserver "github.com/nats-io/nats-server/v2/server"
 )
 
-func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (err error) {
+func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
 	natsPort, err := getFreeNatsPort()
 	if err != nil {
 		return fmt.Errorf("error obtaining NATS port: %w", err)
@@ -35,7 +35,7 @@ func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (e
 	}
 
 	ns.WaitForServer()
-	logger.Info(fmt.Sprintf("starting NATS on port :%d", natsPort))
+	slog.Info(fmt.Sprintf("starting NATS on port :%d", natsPort))
 
 	sessionStore := sessions.NewCookieStore([]byte("session-secret"))
 	sessionStore.MaxAge(int(24 * time.Hour / time.Second))
@@ -43,7 +43,7 @@ func SetupRoutes(ctx context.Context, logger *slog.Logger, router chi.Router) (e
 	if err := errors.Join(
 		setupIndexRoute(router, sessionStore, ns),
 		setupCounterRoute(router, sessionStore),
-		setupMonitorRoute(logger, router),
+		setupMonitorRoute(router),
 		setupSortableRoute(router),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)

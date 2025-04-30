@@ -15,7 +15,7 @@ import (
 	"github.com/shirou/gopsutil/v4/mem"
 )
 
-func setupMonitorRoute(logger *slog.Logger, router chi.Router) error {
+func setupMonitorRoute(router chi.Router) error {
 	router.Get("/monitor", func(w http.ResponseWriter, r *http.Request) {
 		pages.MonitorInitial().Render(r.Context(), w)
 		return
@@ -33,13 +33,13 @@ func setupMonitorRoute(logger *slog.Logger, router chi.Router) error {
 		for {
 			select {
 			case <-r.Context().Done():
-				logger.Debug("client disconnected")
+				slog.Debug("client disconnected")
 				return
 
 			case <-memT.C:
 				m, err := mem.VirtualMemory()
 				if err != nil {
-					logger.Error("unable to get mem stats", slog.String("error", err.Error()))
+					slog.Error("unable to get mem stats", slog.String("error", err.Error()))
 					return
 				}
 
@@ -54,7 +54,7 @@ func setupMonitorRoute(logger *slog.Logger, router chi.Router) error {
 			case <-cpuT.C:
 				c, err := cpu.Times(false)
 				if err != nil {
-					logger.Error("unable to get cpu stats", slog.String("error", err.Error()))
+					slog.Error("unable to get cpu stats", slog.String("error", err.Error()))
 					return
 				}
 

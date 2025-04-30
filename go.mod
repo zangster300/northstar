@@ -14,9 +14,9 @@ require (
 	github.com/delaneyj/toolbelt v0.4.3
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gorilla/sessions v1.4.0
-	github.com/nats-io/nats-server/v2 v2.11.1
+	github.com/nats-io/nats-server/v2 v2.11.2
 	github.com/nats-io/nats.go v1.41.2
-	github.com/samber/lo v1.49.1
+	github.com/samber/lo v1.50.0
 	github.com/shirou/gopsutil/v4 v4.25.3
 	github.com/starfederation/datastar v1.0.0-beta.11
 )
@@ -73,7 +73,7 @@ require (
 	github.com/gohugoio/hugo v0.134.3 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/go-dap v0.12.0 // indirect
-	github.com/google/go-tpm v0.9.3 // indirect
+	github.com/google/go-tpm v0.9.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
@@ -141,7 +141,7 @@ require (
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.63.0 // indirect
+	modernc.org/libc v1.65.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.10.0 // indirect
 	modernc.org/sqlite v1.37.0 // indirect
