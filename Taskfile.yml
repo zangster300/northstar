@@ -2,7 +2,7 @@ version: "3"
 
 env:
   NATS_PORT: 4222
-  STATIC_DIR: "web/static"
+  STATIC_DIR: "internal/ui/static"
 
 tasks:
   # The `build:` tasks below are used together for production builds of a project
@@ -16,20 +16,20 @@ tasks:
 
   build:styles:
     cmds:
-      - pnpm exec tailwindcss -c tailwind.config.js -i web/styles/styles.css -o $STATIC_DIR/index.css
+      - pnpm exec tailwindcss -c tailwind.config.js -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css
     sources:
-      - "./web/**/*.html"
-      - "./web/**/*.ts"
-      - "./web/**/*.templ"
-      - "./web/**/*.go"
+      - "./internal/ui/**/*.html"
+      - "./internal/ui/**/*.ts"
+      - "./internal/ui/**/*.templ"
+      - "./internal/ui/**/*.go"
     generates:
       - "{{.STATIC_DIR}}/index.js"
 
   build:esbuild:
     cmds:
-      - pnpm exec esbuild web/libs/datastar/index.ts --bundle --outdir=$STATIC_DIR
+      - pnpm exec esbuild internal/ui/libs/datastar/index.ts --bundle --outdir=$STATIC_DIR
     sources:
-      - "web/libs/datastar/index.ts"
+      - "internal/ui/libs/datastar/index.ts"
     generates:
       - "{{.STATIC_DIR}}/index.js"
 
@@ -37,13 +37,13 @@ tasks:
     cmds:
       - pnpm -r --filter=lit-html build
     sources:
-      - "web/libs/lit-html/src/**/*.ts"
+      - "internal/ui/libs/lit-html/src/**/*.ts"
     generates:
       - "{{.STATIC_DIR}}/lit-html*"
 
   build:
     cmds:
-      - go build -o bin/main .
+      - go build -tags=prod -o bin/main ./cmd/web
     deps:
       - build:lit-html
       - build:templ
@@ -64,11 +64,11 @@ tasks:
 
   live:styles:
     cmds:
-      - pnpm exec tailwindcss -c tailwind.config.js -i web/styles/styles.css -o $STATIC_DIR/index.css --watch
+      - pnpm exec tailwindcss -c tailwind.config.js -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css --watch
 
   live:esbuild:
     cmds:
-      - pnpm exec esbuild web/libs/datastar/index.ts --sourcemap --bundle --outdir=$STATIC_DIR --watch
+      - pnpm exec esbuild internal/ui/libs/datastar/index.ts --sourcemap --bundle --outdir=$STATIC_DIR --watch
 
   live:lit-html:
     cmds:
@@ -78,10 +78,10 @@ tasks:
     cmds:
       - |
         go tool air  \
-         -build.cmd "go build -tags dev -o tmp/bin/main" \
+         -build.cmd "go build -tags=dev -o tmp/bin/main ./cmd/web" \
          -build.bin "tmp/bin/main" \
          -build.delay "100" \
-         -build.exclude_dir "data,node_modules,web/libs/datastar/node_modules,web/libs/lit-html/node_modules" \
+         -build.exclude_dir "data,node_modules,internal/ui/libs/datastar/node_modules,internal/ui/libs/lit-html/node_modules" \
          -build.include_ext "go" \
          -build.stop_on_error "false" \
          -build.send_interrupt "true" \

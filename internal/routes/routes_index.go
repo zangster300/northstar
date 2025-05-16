@@ -16,8 +16,8 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
-	"github.com/zangster300/northstar/web/components"
-	"github.com/zangster300/northstar/web/pages"
+	"github.com/zangster300/northstar/internal/ui/components"
+	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
 func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
@@ -92,7 +92,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		pages.Index("Northstar").Render(r.Context(), w)
+		if err := pages.Index("Northstar").Render(r.Context(), w); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 	})
 
 	router.Route("/api", func(apiRouter chi.Router) {
@@ -130,7 +132,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 						c := components.TodosMVCView(mvc)
 						if err := sse.MergeFragmentTempl(c); err != nil {
-							sse.ConsoleError(err)
+							if err := sse.ConsoleError(err); err != nil {
+								http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+							}
 							return
 						}
 					}
@@ -156,13 +160,17 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				sessionID, mvc, err := mvcSession(w, r)
 				sse := datastar.NewSSE(w, r)
 				if err != nil {
-					sse.ConsoleError(err)
+					if err := sse.ConsoleError(err); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					}
 					return
 				}
 
 				mvc.EditingIdx = -1
 				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-					sse.ConsoleError(err)
+					if err := sse.ConsoleError(err); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					}
 					return
 				}
 			})
@@ -211,13 +219,17 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 
 					sse := datastar.NewSSE(w, r)
 					if err != nil {
-						sse.ConsoleError(err)
+						if err := sse.ConsoleError(err); err != nil {
+							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+						}
 						return
 					}
 
 					i, err := routeIndex(w, r)
 					if err != nil {
-						sse.ConsoleError(err)
+						if err := sse.ConsoleError(err); err != nil {
+							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+						}
 						return
 					}
 
@@ -237,7 +249,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						todo.Completed = !todo.Completed
 					}
 
-					saveMVC(r.Context(), sessionID, mvc)
+					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					}
 				})
 
 				todoRouter.Route("/edit", func(editRouter chi.Router) {
@@ -254,7 +268,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 
 						mvc.EditingIdx = i
-						saveMVC(r.Context(), sessionID, mvc)
+						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+						}
 					})
 
 					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
@@ -293,7 +309,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 						mvc.EditingIdx = -1
 
-						saveMVC(r.Context(), sessionID, mvc)
+						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+						}
 
 					})
 				})
@@ -317,7 +335,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 							return !todo.Completed
 						})
 					}
-					saveMVC(r.Context(), sessionID, mvc)
+					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					}
 				})
 			})
 		})

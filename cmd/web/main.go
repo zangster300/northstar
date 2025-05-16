@@ -12,7 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/zangster300/northstar/routes"
+	"github.com/zangster300/northstar/internal/routes"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -34,6 +34,18 @@ func main() {
 	}))
 	slog.SetDefault(logger)
 
+	defer slog.Info("stopping server")
+
+	if err := run(context.Background()); err != nil && err != http.ErrServerClosed {
+		slog.Error("error running server", slog.Any("error", err))
+		os.Exit(1)
+	}
+}
+
+func run(ctx context.Context) error {
+	sctx, stop := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
 	getPort := func() string {
 		if p, ok := os.LookupEnv("PORT"); ok {
 			return p
@@ -42,20 +54,8 @@ func main() {
 	}
 
 	slog.Info("starting server on port :" + getPort())
-	defer slog.Info("stopping server")
 
-	if err := run(context.Background(), getPort()); err != nil && err != http.ErrServerClosed {
-		slog.Error("error running server", slog.Any("error", err))
-		os.Exit(1)
-	}
-}
-
-func run(ctx context.Context, port string) error {
-	sctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
-	eg, ctx := errgroup.WithContext(sctx)
-
+	eg, egctx := errgroup.WithContext(sctx)
 	eg.Go(func() error {
 		router := chi.NewMux()
 
@@ -64,19 +64,20 @@ func run(ctx context.Context, port string) error {
 			middleware.Recoverer,
 		)
 
-		router.Handle("/static/*", http.StripPrefix("/static/", static()))
+		router.Handle("/static/*", static())
 
-		if err := routes.SetupRoutes(ctx, router); err != nil {
+		if err := routes.SetupRoutes(egctx, router); err != nil {
 			return fmt.Errorf("error setting up routes: %w", err)
 		}
 
 		srv := &http.Server{
-			Addr:    "0.0.0.0:" + port,
-			Handler: router,
+			Addr:     "0.0.0.0:" + getPort(),
+			Handler:  router,
+			ErrorLog: slog.NewLogLogger(slog.Default().Handler(), slog.LevelError),
 		}
 
 		go func() {
-			<-ctx.Done()
+			<-egctx.Done()
 			if err := srv.Shutdown(context.Background()); err != nil {
 				log.Fatalf("error during shutdown: %v", err)
 			}

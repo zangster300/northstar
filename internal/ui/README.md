@@ -1,6 +1,6 @@
 # Purpose
 
-This directory holds resources used for the web portion of an application
+This directory holds resources used for the ui portion of an application
 
 # Organization
 

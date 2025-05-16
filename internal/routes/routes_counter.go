@@ -8,13 +8,15 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	datastar "github.com/starfederation/datastar/sdk/go"
-	"github.com/zangster300/northstar/web/pages"
+	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
 func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 
 	router.Get("/counter", func(w http.ResponseWriter, r *http.Request) {
-		pages.CounterInitial().Render(r.Context(), w)
+		if err := pages.CounterInitial().Render(r.Context(), w); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 	})
 
 	var globalCounter atomic.Uint32
@@ -40,6 +42,7 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 		userCount, _, err := GetUserValue(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		store := pages.CounterSignals{
@@ -47,11 +50,13 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 			User:   userCount,
 		}
 
-		datastar.NewSSE(w, r).MergeFragmentTempl(pages.Counter(store))
+		if err := datastar.NewSSE(w, r).MergeFragmentTempl(pages.Counter(store)); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 	})
 
 	updateGlobal := func(store *gabs.Container) {
-		store.Set(globalCounter.Add(1), "global")
+		_, _ = store.Set(globalCounter.Add(1), "global")
 	}
 
 	router.Route("/counter/increment", func(incrementRouter chi.Router) {
@@ -59,26 +64,35 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 			update := gabs.New()
 			updateGlobal(update)
 
-			datastar.NewSSE(w, r).MarshalAndMergeSignals(update)
+			if err := datastar.NewSSE(w, r).MarshalAndMergeSignals(update); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
 		})
 
 		incrementRouter.Post("/user", func(w http.ResponseWriter, r *http.Request) {
 			val, sess, err := GetUserValue(r)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 
 			val++
 			sess.Values[countKey] = val
 			if err := sess.Save(r, w); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 
 			update := gabs.New()
 			updateGlobal(update)
-			update.Set(val, "user")
+			if _, err := update.Set(val, "user"); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
 
-			datastar.NewSSE(w, r).MarshalAndMergeSignals(update)
+			if err := datastar.NewSSE(w, r).MarshalAndMergeSignals(update); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
 		})
 	})
 

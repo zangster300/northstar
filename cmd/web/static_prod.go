@@ -4,19 +4,14 @@
 package main
 
 import (
-	"embed"
-	"io/fs"
 	"log/slog"
 	"net/http"
 
 	hashFS "github.com/benbjohnson/hashfs"
+	"github.com/zangster300/northstar/internal/ui"
 )
-
-//go:embed web/static/*
-var staticFS embed.FS
-var staticRootFS, _ = fs.Sub(staticFS, "web/static")
 
 func static() http.Handler {
 	slog.Debug("static assets are embedded")
-	return hashFS.FileServer(staticRootFS)
+	return hashFS.FileServer(ui.StaticAssets)
 }

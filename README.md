@@ -29,7 +29,7 @@ go mod tidy
 
 Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
 
-Use the [live task](./Taskfile.yml#L106) from the [Taskfile](https://taskfile.dev/) to start the server
+Use the [live task](./Taskfile.yml#L104) from the [Taskfile](https://taskfile.dev/) to start the server
 
 ```shell
 go tool task live
@@ -70,7 +70,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#L44) will assemble and build a binary [with static assets embedded](./static_prod.go#L19)
+The `task build` [task](./Taskfile.yml#L44) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
 
 ## Docker
 
@@ -99,7 +99,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./routes/router.go#L27) file
+An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/routes/router.go#L26) file
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 
@@ -131,7 +131,7 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 
 ### Web Components x Datastar
 
-[🔗 Web Components Setup](./web/libs/lit-html/README.md)
+[🔗 Web Components Setup](./internal/ui/libs/lit-html/README.md)
 
 ## HDA Required Reading 
 

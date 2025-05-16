@@ -1,11 +1,11 @@
 # source: https://github.com/github/gitignore/tree/main
 # ------------------------------------------------------------------
-data/*
+data
 
 .task
 
-web/static/*
-!web/static/assets
+internal/ui/static/*
+!internal/ui/static/assets
 
 # ------------------------------------------------------------------
 # Go

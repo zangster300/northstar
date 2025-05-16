@@ -1,15 +1,15 @@
 {
   "name": "northstar",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "author": "Nicholas Zanghi",
   "type": "module",
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.4",
+    "@tailwindcss/cli": "^4.1.7",
     "autoprefixer": "^10.4.21",
-    "daisyui": "5.0.27",
-    "esbuild": "^0.25.2",
+    "daisyui": "5.0.35",
+    "esbuild": "^0.25.4",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3"
   }
 }

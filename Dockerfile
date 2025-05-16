@@ -6,7 +6,7 @@ WORKDIR /src
 COPY . ./
 RUN go mod download
 RUN --mount=type=cache,target=/root/.cache/go-build \
-go build -ldflags="-s" -o /bin/main .
+go build -tags=prod -ldflags="-s" -o /bin/main ./cmd/web
 RUN upx -9 -k /bin/main
 
 FROM scratch
