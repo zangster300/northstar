@@ -4,6 +4,23 @@ import "github.com/zangster300/northstar/internal/ui/layouts"
 
 templ SortableInitial() {
 	@layouts.Base("Sortable Example") {
+		<script>
+			function handleScriptErr() {
+				const message = document.createElement('div')
+
+				const span1 = document.createElement('span')
+				const span2 = document.createElement('span')
+				span1.innerText = "To view this specific example, you will need pnpm!"
+				span2.innerText = "Check out the README in `internal/ui/libs/lit` to learn more"
+
+				message.classList.add("flex", "flex-col", "gap-2", "items-center")
+
+				message.appendChild(span1)
+				message.appendChild(span2)
+
+				document.querySelector("article").appendChild(message)
+			}
+		</script>
 		<nav class="flex justify-center my-2">
 			<ul class="menu menu-vertical md:menu-horizontal bg-base-200 rounded-box">
 				<li class="hover:text-primary"><a href="/counter">Counter Example</a></li>
@@ -20,7 +37,7 @@ templ SortableInitial() {
 				data-attr-items="$items"
 				data-on-change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
 			></sortable-example>
-			<script defer type="module" src="/static/lit-html.js"></script>
+			<script type="module" src="/static/lit.js" onerror="handleScriptErr()"></script>
 		</article>
 	}
 }

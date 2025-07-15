@@ -1,4 +1,4 @@
-# NORTHSTAR - A Hypermedia-Driven Application Starter Template
+# NORTHSTAR
 
 # Stack
 
@@ -6,7 +6,7 @@
 - [NATS](https://docs.nats.io/)
 - [Datastar](https://github.com/starfederation/datastar)
 - [Templ](https://templ.guide/)
-  - [Tailwind](https://tailwindcss.com/) x [DaisyUI](https://daisyui.com/) x [esbuild](https://esbuild.github.io/)
+  - [Tailwind](https://tailwindcss.com/) x [DaisyUI](https://daisyui.com/)
 
 # Setup
 
@@ -19,7 +19,6 @@ git clone https://github.com/zangster300/northstar.git
 2. Install Dependencies
 
 ```shell
-pnpm install
 go mod tidy
 ```
 
@@ -29,7 +28,7 @@ go mod tidy
 
 Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
 
-Use the [live task](./Taskfile.yml#L104) from the [Taskfile](https://taskfile.dev/) to start the server
+Use [live task](./Taskfile.yml#L75) from the [Taskfile](https://taskfile.dev/) to start the server
 
 ```shell
 go tool task live
@@ -39,7 +38,7 @@ Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite we
 
 ## Debugging
 
-The [debug task](./Taskfile.yml#L54) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
+The [debug task](./Taskfile.yml#L37) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
 
 ```shell
 go tool task debug
@@ -70,7 +69,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#L44) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
+The `task build` [task](./Taskfile.yml#29) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
 
 ## Docker
 
@@ -119,23 +118,16 @@ nats kv get --raw todos [key]
 nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"editingIdx":-1,"mode":0}'
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > To see these updates take place in realtime within the `TODO` example, make sure your browser is pointed to the real server and not the templ proxy server!
+
+# Web Components x Lit x Datastar
+
+[🔗 Web Components Setup](./internal/ui/libs/lit/README.md)
 
 ## Client
 
 - [tailwindcss](https://tailwindcss.com/)
 - [daisyui](https://daisyui.com/)
 - [esbuild](https://esbuild.github.io/)
-- [lit-html](https://lit.dev/)
-
-### Web Components x Datastar
-
-[🔗 Web Components Setup](./internal/ui/libs/lit-html/README.md)
-
-## HDA Required Reading 
-
-- [Hypermedia-Driven Applications](https://htmx.org/essays/hypermedia-driven-applications/)
-- [HTMX Sucks](https://htmx.org/essays/htmx-sucks/)
-- [HTMX Sucks (kinda)](https://data-star.dev/essays/htmx_sucks)
-- [Streams All the Way Down](https://data-star.dev/essays/event_streams_all_the_way_down)
+- [lit](https://lit.dev/)

@@ -2,7 +2,6 @@ import fs from 'fs'
 import { resolve } from 'path'
 import { defineConfig, Plugin } from 'vite'
 import pc from 'picocolors'
-import dts from 'vite-plugin-dts'
 
 const bundleOutputPath = 'dist'
 
@@ -25,7 +24,7 @@ const copyBuildPlugin = (path: string): Plugin => {
 
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [dts({ rollupTypes: true, tsconfigPath: './tsconfig.json' }), copyBuildPlugin('../../static/.')],
+    plugins: [copyBuildPlugin('../../static/.')],
     build: {
       target: 'esnext',
       minify: 'esbuild',
@@ -34,11 +33,6 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
-      },
-      rollupOptions: {
-        output: {
-          dir: 'dist',
-        },
       },
     },
   }

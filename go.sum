@@ -247,6 +247,10 @@ github.com/hashicorp/golang-lru/v2 v2.0.7 h1:a+bsQ5rvGLjzHuww6tVxozPZFVghXaHOwFs
 github.com/hashicorp/golang-lru/v2 v2.0.7/go.mod h1:QeFd9opnmA6QUJc5vARoKUSoFhyfM2/ZepoAG6RGpeM=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
+github.com/hookenz/gotailwind/v4 v4.1.7 h1:9J/8p5WIqoYipBwaecgdzDNZWAL1nPjKuqD6tjkAGyU=
+github.com/hookenz/gotailwind/v4 v4.1.7/go.mod h1:IfiJtdp8ExV9HV2XUiVjRBvB3QewVXVKWoAGEcpjfNE=
+github.com/hookenz/gotailwind/v4 v4.1.11 h1:eGwPyxFi58IYwI9pdn1I8oSbLg0Imth8ME0oeqXEChU=
+github.com/hookenz/gotailwind/v4 v4.1.11/go.mod h1:IfiJtdp8ExV9HV2XUiVjRBvB3QewVXVKWoAGEcpjfNE=
 github.com/iancoleman/strcase v0.3.0 h1:nTXanmYxhfFAMjZL34Ov6gkzEsSJZ5DbhxWjvSASxEI=
 github.com/iancoleman/strcase v0.3.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/igrmk/treemap/v2 v2.0.1 h1:Jhy4z3yhATvYZMWCmxsnHO5NnNZBdueSzvxh6353l+0=
