@@ -121,7 +121,7 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 > [!IMPORTANT]
 > To see these updates take place in realtime within the `TODO` example, make sure your browser is pointed to the real server and not the templ proxy server!
 
-# Web Components x Lit x Datastar
+## Web Components x Lit x Datastar
 
 [🔗 Web Components Setup](./internal/ui/libs/lit/README.md)
 

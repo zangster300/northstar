@@ -7,7 +7,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	datastar "github.com/starfederation/datastar/sdk/go"
+	"github.com/starfederation/datastar-go/datastar"
 	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
@@ -50,7 +50,7 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 			User:   userCount,
 		}
 
-		if err := datastar.NewSSE(w, r).MergeFragmentTempl(pages.Counter(store)); err != nil {
+		if err := datastar.NewSSE(w, r).PatchElementTempl(pages.Counter(store)); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})
@@ -64,7 +64,7 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 			update := gabs.New()
 			updateGlobal(update)
 
-			if err := datastar.NewSSE(w, r).MarshalAndMergeSignals(update); err != nil {
+			if err := datastar.NewSSE(w, r).MarshalAndPatchSignals(update); err != nil {
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		})
@@ -90,7 +90,7 @@ func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 				return
 			}
 
-			if err := datastar.NewSSE(w, r).MarshalAndMergeSignals(update); err != nil {
+			if err := datastar.NewSSE(w, r).MarshalAndPatchSignals(update); err != nil {
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		})

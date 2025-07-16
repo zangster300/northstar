@@ -10,7 +10,7 @@ import (
 
 	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/embeddednats"
-	datastar "github.com/starfederation/datastar/sdk/go"
+	"github.com/starfederation/datastar-go/datastar"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
@@ -131,7 +131,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 							return
 						}
 						c := components.TodosMVCView(mvc)
-						if err := sse.MergeFragmentTempl(c); err != nil {
+						if err := sse.PatchElementTempl(c); err != nil {
 							if err := sse.ConsoleError(err); err != nil {
 								http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 							}

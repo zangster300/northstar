@@ -10,7 +10,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
-	datastar "github.com/starfederation/datastar/sdk/go"
+	"github.com/starfederation/datastar-go/datastar"
 	"github.com/zangster300/northstar/internal/ui/pages"
 
 	"github.com/shirou/gopsutil/v4/cpu"
@@ -51,7 +51,7 @@ func setupMonitorRoute(router chi.Router) error {
 					MemUsedPercent: fmt.Sprintf("%.2f%%", vm.UsedPercent),
 				}
 
-				if err := sse.MarshalAndMergeSignals(memStats); err != nil {
+				if err := sse.MarshalAndPatchSignals(memStats); err != nil {
 					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				}
 
@@ -68,7 +68,7 @@ func setupMonitorRoute(router chi.Router) error {
 					CpuIdle:   relativeTime(cpuTimes[0].Idle),
 				}
 
-				if err := sse.MarshalAndMergeSignals(cpuStats); err != nil {
+				if err := sse.MarshalAndPatchSignals(cpuStats); err != nil {
 					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				}
 			}
