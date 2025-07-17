@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.24.0-alpine AS build
+FROM docker.io/golang:1.24.2-alpine AS build
 
 RUN apk add --no-cache upx
 
