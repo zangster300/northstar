@@ -1,57 +1,41 @@
 package routes
 
 import (
-	"context"
-	"encoding/json"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
+	"sync"
 
-	"github.com/delaneyj/toolbelt"
-	"github.com/delaneyj/toolbelt/embeddednats"
 	"github.com/starfederation/datastar-go/datastar"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
-func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
-	nc, err := ns.Client()
-	if err != nil {
-		return fmt.Errorf("error creating nats client: %w", err)
-	}
+var (
+	// In-memory storage for todos per session
+	todosStore      = make(map[string]*components.TodoMVC)
+	todosStoreMutex sync.RWMutex
+)
 
-	js, err := jetstream.New(nc)
-	if err != nil {
-		return fmt.Errorf("error creating jetstream client: %w", err)
-	}
-
-	kv, err := js.CreateOrUpdateKeyValue(context.Background(), jetstream.KeyValueConfig{
-		Bucket:      "todos",
-		Description: "Datastar Todos",
-		Compression: true,
-		TTL:         time.Hour,
-		MaxBytes:    16 * 1024 * 1024,
-	})
-
-	if err != nil {
-		return fmt.Errorf("error creating key value: %w", err)
-	}
-
-	saveMVC := func(ctx context.Context, sessionID string, mvc *components.TodoMVC) error {
-		b, err := json.Marshal(mvc)
-		if err != nil {
-			return fmt.Errorf("failed to marshal mvc: %w", err)
-		}
-		if _, err := kv.Put(ctx, sessionID, b); err != nil {
-			return fmt.Errorf("failed to put key value: %w", err)
-		}
+func setupIndexRoute(router chi.Router, store sessions.Store) error {
+	saveMVC := func(sessionID string, mvc *components.TodoMVC) error {
+		todosStoreMutex.Lock()
+		defer todosStoreMutex.Unlock()
+		todosStore[sessionID] = mvc
 		return nil
+	}
+
+	loadMVC := func(sessionID string) (*components.TodoMVC, bool) {
+		todosStoreMutex.RLock()
+		defer todosStoreMutex.RUnlock()
+		mvc, exists := todosStore[sessionID]
+		return mvc, exists
 	}
 
 	resetMVC := func(mvc *components.TodoMVC) {
@@ -67,25 +51,17 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	}
 
 	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error) {
-		ctx := r.Context()
 		sessionID, err := upsertSessionID(store, r, w)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to get session id: %w", err)
 		}
 
-		mvc := &components.TodoMVC{}
-		if entry, err := kv.Get(ctx, sessionID); err != nil {
-			if err != jetstream.ErrKeyNotFound {
-				return "", nil, fmt.Errorf("failed to get key value: %w", err)
-			}
+		mvc, exists := loadMVC(sessionID)
+		if !exists {
+			mvc = &components.TodoMVC{}
 			resetMVC(mvc)
-
-			if err := saveMVC(ctx, sessionID, mvc); err != nil {
+			if err := saveMVC(sessionID, mvc); err != nil {
 				return "", nil, fmt.Errorf("failed to save mvc: %w", err)
-			}
-		} else {
-			if err := json.Unmarshal(entry.Value(), mvc); err != nil {
-				return "", nil, fmt.Errorf("failed to unmarshal mvc: %w", err)
 			}
 		}
 		return sessionID, mvc, nil
@@ -100,44 +76,19 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	router.Route("/api", func(apiRouter chi.Router) {
 		apiRouter.Route("/todos", func(todosRouter chi.Router) {
 			todosRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-
-				sessionID, mvc, err := mvcSession(w, r)
+				_, mvc, err := mvcSession(w, r)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 
 				sse := datastar.NewSSE(w, r)
-
-				// Watch for updates
-				ctx := r.Context()
-				watcher, err := kv.Watch(ctx, sessionID)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				defer watcher.Stop()
-
-				for {
-					select {
-					case <-ctx.Done():
-						return
-					case entry := <-watcher.Updates():
-						if entry == nil {
-							continue
-						}
-						if err := json.Unmarshal(entry.Value(), mvc); err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-						c := components.TodosMVCView(mvc)
-						if err := sse.PatchElementTempl(c); err != nil {
-							if err := sse.ConsoleError(err); err != nil {
-								http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-							}
-							return
-						}
+				c := components.TodosMVCView(mvc)
+				if err := sse.PatchElementTempl(c); err != nil {
+					if err := sse.ConsoleError(err); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 					}
+					return
 				}
 			})
 
@@ -149,14 +100,13 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				resetMVC(mvc)
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+				if err := saveMVC(sessionID, mvc); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 			})
 
 			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
-
 				sessionID, mvc, err := mvcSession(w, r)
 				sse := datastar.NewSSE(w, r)
 				if err != nil {
@@ -167,7 +117,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				mvc.EditingIdx = -1
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+				if err := saveMVC(sessionID, mvc); err != nil {
 					if err := sse.ConsoleError(err); err != nil {
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 					}
@@ -176,7 +126,6 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 			})
 
 			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
-
 				sessionID, mvc, err := mvcSession(w, r)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -197,7 +146,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				mvc.Mode = mode
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+				if err := saveMVC(sessionID, mvc); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
@@ -249,7 +198,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						todo.Completed = !todo.Completed
 					}
 
-					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					if err := saveMVC(sessionID, mvc); err != nil {
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 					}
 				})
@@ -268,7 +217,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 
 						mvc.EditingIdx = i
-						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+						if err := saveMVC(sessionID, mvc); err != nil {
 							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 						}
 					})
@@ -309,10 +258,9 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 						mvc.EditingIdx = -1
 
-						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+						if err := saveMVC(sessionID, mvc); err != nil {
 							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 						}
-
 					})
 				})
 
@@ -335,7 +283,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 							return !todo.Completed
 						})
 					}
-					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					if err := saveMVC(sessionID, mvc); err != nil {
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 					}
 				})
@@ -346,12 +294,10 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	return nil
 }
 
-func MustJSONMarshal(v any) string {
-	b, err := json.MarshalIndent(v, "", " ")
-	if err != nil {
-		panic(err)
-	}
-	return string(b)
+func generateID() string {
+	bytes := make([]byte, 16)
+	rand.Read(bytes)
+	return base64.URLEncoding.EncodeToString(bytes)
 }
 
 func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
@@ -363,7 +309,7 @@ func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWrite
 	id, ok := sess.Values["id"].(string)
 
 	if !ok {
-		id = toolbelt.NextEncodedID()
+		id = generateID()
 		sess.Values["id"] = id
 		if err := sess.Save(r, w); err != nil {
 			return "", fmt.Errorf("failed to save session: %w", err)

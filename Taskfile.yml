@@ -1,7 +1,6 @@
 version: "3"
 
 env:
-  NATS_PORT: 4222
   STATIC_DIR: "internal/ui/static"
 
 tasks:
