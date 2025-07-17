@@ -1,5 +1,7 @@
 version: "3"
 
+output: prefixed
+
 env:
   STATIC_DIR: "internal/ui/static"
 
