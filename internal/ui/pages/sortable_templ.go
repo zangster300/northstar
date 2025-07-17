@@ -8,7 +8,10 @@ package pages
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/zangster300/northstar/internal/ui/layouts"
+import (
+	"github.com/zangster300/northstar/internal/ui/components"
+	"github.com/zangster300/northstar/internal/ui/layouts"
+)
 
 func SortableInitial() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -43,7 +46,15 @@ func SortableInitial() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\t\tfunction handleScriptErr() {\n\t\t\t\tconst message = document.createElement('div')\n\n\t\t\t\tconst span1 = document.createElement('span')\n\t\t\t\tconst span2 = document.createElement('span')\n\t\t\t\tspan1.innerText = \"To view this specific example, you will need pnpm!\"\n\t\t\t\tspan2.innerText = \"Check out the README in `internal/ui/libs/lit` to learn more\"\n\n\t\t\t\tmessage.classList.add(\"flex\", \"flex-col\", \"gap-2\", \"items-center\")\n\n\t\t\t\tmessage.appendChild(span1)\n\t\t\t\tmessage.appendChild(span2)\n\n\t\t\t\tdocument.querySelector(\"article\").appendChild(message)\n\t\t\t}\n\t\t</script> <nav class=\"flex justify-center my-2\"><ul class=\"menu menu-vertical md:menu-horizontal bg-base-200 rounded-box\"><li class=\"hover:text-primary\"><a href=\"/counter\">Counter Example</a></li><li class=\"hover:text-primary\"><a href=\"/monitor\">System Monitoring Example</a></li><li class=\"hover:text-primary\"><a href=\"/\">Todo Example</a></li></ul></nav><article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: 'item one'}, {name: 'item two'}, {name: 'item three'}, {name: 'item four'}, {name: 'item five'}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"$items\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\t\tfunction handleScriptErr() {\n\t\t\t\tconst message = document.createElement('div')\n\n\t\t\t\tconst span1 = document.createElement('span')\n\t\t\t\tconst span2 = document.createElement('span')\n\t\t\t\tspan1.innerText = \"To view this specific example, you will need pnpm!\"\n\t\t\t\tspan2.innerText = \"Check out the README in `internal/ui/libs/lit` to learn more\"\n\n\t\t\t\tmessage.classList.add(\"flex\", \"flex-col\", \"gap-2\", \"items-center\")\n\n\t\t\t\tmessage.appendChild(span1)\n\t\t\t\tmessage.appendChild(span2)\n\n\t\t\t\tdocument.querySelector(\"article\").appendChild(message)\n\t\t\t}\n\t\t</script> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.Navigation("/sortable").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: 'item one'}, {name: 'item two'}, {name: 'item three'}, {name: 'item four'}, {name: 'item five'}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"$items\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
