@@ -2,6 +2,8 @@ version: "3"
 
 output: prefixed
 
+dotenv: ['.env']
+
 env:
   STATIC_DIR: "internal/ui/static"
 
@@ -44,7 +46,7 @@ tasks:
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:
     cmds:
-      - go tool templ generate --watch --proxy="http://localhost:8080" --open-browser=false
+      - go tool templ generate --watch --proxy="http://localhost:${PORT:-8080}" --open-browser=false
 
   live:server:
     cmds:

@@ -35,6 +35,16 @@ go tool task live
 
 Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite web browser to begin
 
+## Port Configuration
+
+The default development port is 8080, but can be configured by creating a `.env` file in the project root:
+
+Example `.env` file:
+
+```sh
+PORT=4000
+```
+
 ## Debugging
 
 The [debug task](./Taskfile.yml#L37) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
