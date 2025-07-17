@@ -52,8 +52,8 @@ tasks:
     cmds:
       - |
         go tool air  \
-         -build.cmd "go build -tags=dev -o tmp/bin/main ./cmd/web" \
-         -build.bin "tmp/bin/main" \
+         -build.cmd "go build -tags=dev -o tmp/server/bin/main ./cmd/web" \
+         -build.bin "tmp/server/bin/main" \
          -build.delay "100" \
          -build.exclude_dir "data,node_modules,internal/ui/libs/datastar/node_modules,internal/ui/libs/lit/node_modules" \
          -build.include_ext "go" \
@@ -65,6 +65,7 @@ tasks:
   live:reload:
     cmds:
       - |
+        mkdir -p tmp/reload && \
         go tool air \
         -build.cmd "go tool templ generate --notify-proxy" \
         -build.bin "true" \
@@ -73,7 +74,8 @@ tasks:
         -build.include_dir "$STATIC_DIR" \
         -build.include_ext "js,css" \
         -build.send_interrupt "true" \
-        -build.kill_delay "200"
+        -build.kill_delay "200" \
+        -tmp_dir "tmp/reload"
 
   live:
     deps:
