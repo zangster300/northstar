@@ -1,39 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
+    "experimentalDecorators": true,
     "isolatedModules": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2022.Object"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-
-    /* Linting */
-    "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    /* Decorators */
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-
-    /* Path resolution */
-    "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types"],
-    "paths": {
-      "lit": ["./node_modules/lit"],
-      "lit/*": ["./node_modules/lit/*"],
-      "sortablejs": ["./node_modules/sortablejs"],
-      "@types/sortablejs": ["./node_modules/@types/sortablejs"],
-      "*": ["./node_modules/*", "./node_modules/@types/*"]
-    }
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "useDefineForClassFields": false
   },
-  "include": ["../features/*/web/**/*", "index.ts"]
+  "include": ["src"]
 }

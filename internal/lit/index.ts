@@ -1,1 +1,0 @@
-export { SortableExample } from '../features/sortable/web/sortable-example/sortable-example'

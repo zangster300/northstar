@@ -1,3 +1,0 @@
-{
-  "extends": "./internal/lit/tsconfig.json"
-}
