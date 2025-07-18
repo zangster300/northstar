@@ -3,7 +3,6 @@
 # Stack
 
 - [Go](https://go.dev/doc/)
-- [NATS](https://docs.nats.io/)
 - [Datastar](https://github.com/starfederation/datastar)
 - [Templ](https://templ.guide/)
   - [Tailwind](https://tailwindcss.com/) x [DaisyUI](https://daisyui.com/)
@@ -102,34 +101,12 @@ Completely open to PR's and feature requests
 ## Server
 
 - [go](https://go.dev/)
-- [nats](https://docs.nats.io/)
 - [datastar sdk](https://github.com/starfederation/datastar/tree/develop/sdk)
 - [templ](https://templ.guide/)
 
-### Embedded NATS
+### In-Memory Storage
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/routes/router.go#L26) file
-
-To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
-
-Here are some commands to inspect and make changes to the bucket backing the `TODO` app:
-
-```shell
-# list key value buckets
-nats kv ls
-
-# list keys in the `todos` bucket
-nats kv ls todos
-
-# get the value for [key]
-nats kv get --raw todos [key]
-
-# put a value into [key]
-nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"editingIdx":-1,"mode":0}'
-```
-
-> [!IMPORTANT]
-> To see these updates take place in realtime within the `TODO` example, make sure your browser is pointed to the real server and not the templ proxy server!
+The `TODO` application uses in-memory storage with real-time updates powered by Go channels and server-sent events. Todo data is stored per session and automatically synchronized across browser tabs for the same session.
 
 ## Web Components x Lit x Datastar
 

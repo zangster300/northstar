@@ -1,59 +1,106 @@
 package routes
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
+	"sync"
 
 	"github.com/delaneyj/toolbelt"
-	"github.com/delaneyj/toolbelt/embeddednats"
-	"github.com/starfederation/datastar-go/datastar"
+	datastar "github.com/starfederation/datastar-go/datastar"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	"github.com/nats-io/nats.go/jetstream"
-	"github.com/samber/lo"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
-func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
-	nc, err := ns.Client()
-	if err != nil {
-		return fmt.Errorf("error creating nats client: %w", err)
-	}
+// In-memory storage for todo data
+type TodoStore struct {
+	mu   sync.RWMutex
+	data map[string]*components.TodoMVC
 
-	js, err := jetstream.New(nc)
-	if err != nil {
-		return fmt.Errorf("error creating jetstream client: %w", err)
-	}
+	// Channel for broadcasting updates
+	updateCh chan UpdateEvent
+	// Map of session IDs to their update channels
+	subscribers map[string]chan UpdateEvent
+	subMu       sync.RWMutex
+}
 
-	kv, err := js.CreateOrUpdateKeyValue(context.Background(), jetstream.KeyValueConfig{
-		Bucket:      "todos",
-		Description: "Datastar Todos",
-		Compression: true,
-		TTL:         time.Hour,
-		MaxBytes:    16 * 1024 * 1024,
-	})
+type UpdateEvent struct {
+	SessionID string
+	Data      *components.TodoMVC
+}
 
-	if err != nil {
-		return fmt.Errorf("error creating key value: %w", err)
-	}
+var globalTodoStore = &TodoStore{
+	data:        make(map[string]*components.TodoMVC),
+	updateCh:    make(chan UpdateEvent, 100),
+	subscribers: make(map[string]chan UpdateEvent),
+}
 
-	saveMVC := func(ctx context.Context, sessionID string, mvc *components.TodoMVC) error {
-		b, err := json.Marshal(mvc)
-		if err != nil {
-			return fmt.Errorf("failed to marshal mvc: %w", err)
+func init() {
+	// Start the update broadcaster goroutine
+	go globalTodoStore.broadcaster()
+}
+
+func (ts *TodoStore) broadcaster() {
+	for update := range ts.updateCh {
+		ts.subMu.RLock()
+		for sessionID, ch := range ts.subscribers {
+			if sessionID == update.SessionID {
+				select {
+				case ch <- update:
+				default:
+					// Channel is full, skip
+				}
+			}
 		}
-		if _, err := kv.Put(ctx, sessionID, b); err != nil {
-			return fmt.Errorf("failed to put key value: %w", err)
-		}
-		return nil
+		ts.subMu.RUnlock()
 	}
+}
 
+func (ts *TodoStore) Subscribe(sessionID string) chan UpdateEvent {
+	ts.subMu.Lock()
+	defer ts.subMu.Unlock()
+
+	ch := make(chan UpdateEvent, 10)
+	ts.subscribers[sessionID] = ch
+	return ch
+}
+
+func (ts *TodoStore) Unsubscribe(sessionID string) {
+	ts.subMu.Lock()
+	defer ts.subMu.Unlock()
+
+	if ch, exists := ts.subscribers[sessionID]; exists {
+		close(ch)
+		delete(ts.subscribers, sessionID)
+	}
+}
+
+func (ts *TodoStore) Get(sessionID string) (*components.TodoMVC, bool) {
+	ts.mu.RLock()
+	defer ts.mu.RUnlock()
+
+	mvc, exists := ts.data[sessionID]
+	return mvc, exists
+}
+
+func (ts *TodoStore) Set(sessionID string, mvc *components.TodoMVC) {
+	ts.mu.Lock()
+	ts.data[sessionID] = mvc
+	ts.mu.Unlock()
+
+	// Broadcast update
+	select {
+	case ts.updateCh <- UpdateEvent{SessionID: sessionID, Data: mvc}:
+	default:
+		// Channel is full, skip
+	}
+}
+
+func setupIndexRoute(router chi.Router, store sessions.Store) error {
 	resetMVC := func(mvc *components.TodoMVC) {
 		mvc.Mode = components.TodoViewModeAll
 		mvc.Todos = []*components.Todo{
@@ -67,27 +114,18 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	}
 
 	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error) {
-		ctx := r.Context()
 		sessionID, err := upsertSessionID(store, r, w)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to get session id: %w", err)
 		}
 
-		mvc := &components.TodoMVC{}
-		if entry, err := kv.Get(ctx, sessionID); err != nil {
-			if err != jetstream.ErrKeyNotFound {
-				return "", nil, fmt.Errorf("failed to get key value: %w", err)
-			}
+		mvc, exists := globalTodoStore.Get(sessionID)
+		if !exists {
+			mvc = &components.TodoMVC{}
 			resetMVC(mvc)
-
-			if err := saveMVC(ctx, sessionID, mvc); err != nil {
-				return "", nil, fmt.Errorf("failed to save mvc: %w", err)
-			}
-		} else {
-			if err := json.Unmarshal(entry.Value(), mvc); err != nil {
-				return "", nil, fmt.Errorf("failed to unmarshal mvc: %w", err)
-			}
+			globalTodoStore.Set(sessionID, mvc)
 		}
+
 		return sessionID, mvc, nil
 	}
 
@@ -109,28 +147,30 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 
 				sse := datastar.NewSSE(w, r)
 
-				// Watch for updates
-				ctx := r.Context()
-				watcher, err := kv.Watch(ctx, sessionID)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
+				// Subscribe to updates for this session
+				updateCh := globalTodoStore.Subscribe(sessionID)
+				defer globalTodoStore.Unsubscribe(sessionID)
+
+				// Send initial data
+				c := components.TodosMVCView(mvc)
+				if err := sse.PatchElementTempl(c); err != nil {
+					if err := sse.ConsoleError(err); err != nil {
+						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					}
 					return
 				}
-				defer watcher.Stop()
 
+				// Watch for updates
+				ctx := r.Context()
 				for {
 					select {
 					case <-ctx.Done():
 						return
-					case entry := <-watcher.Updates():
-						if entry == nil {
+					case update := <-updateCh:
+						if update.Data == nil {
 							continue
 						}
-						if err := json.Unmarshal(entry.Value(), mvc); err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-						c := components.TodosMVCView(mvc)
+						c := components.TodosMVCView(update.Data)
 						if err := sse.PatchElementTempl(c); err != nil {
 							if err := sse.ConsoleError(err); err != nil {
 								http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -149,10 +189,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				resetMVC(mvc)
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
+				globalTodoStore.Set(sessionID, mvc)
 			})
 
 			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
@@ -167,12 +204,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				mvc.EditingIdx = -1
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-					if err := sse.ConsoleError(err); err != nil {
-						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-					}
-					return
-				}
+				globalTodoStore.Set(sessionID, mvc)
 			})
 
 			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
@@ -197,10 +229,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 				}
 
 				mvc.Mode = mode
-				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
+				globalTodoStore.Set(sessionID, mvc)
 			})
 
 			todosRouter.Route("/{idx}", func(todoRouter chi.Router) {
@@ -249,9 +278,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						todo.Completed = !todo.Completed
 					}
 
-					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-					}
+					globalTodoStore.Set(sessionID, mvc)
 				})
 
 				todoRouter.Route("/edit", func(editRouter chi.Router) {
@@ -268,9 +295,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 
 						mvc.EditingIdx = i
-						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-						}
+						globalTodoStore.Set(sessionID, mvc)
 					})
 
 					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
@@ -309,9 +334,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 						}
 						mvc.EditingIdx = -1
 
-						if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-						}
+						globalTodoStore.Set(sessionID, mvc)
 
 					})
 				})
@@ -331,13 +354,16 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 					if i >= 0 {
 						mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
 					} else {
-						mvc.Todos = lo.Filter(mvc.Todos, func(todo *components.Todo, i int) bool {
-							return !todo.Completed
-						})
+						// Filter out completed todos
+						var filteredTodos []*components.Todo
+						for _, todo := range mvc.Todos {
+							if !todo.Completed {
+								filteredTodos = append(filteredTodos, todo)
+							}
+						}
+						mvc.Todos = filteredTodos
 					}
-					if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
-						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-					}
+					globalTodoStore.Set(sessionID, mvc)
 				})
 			})
 		})

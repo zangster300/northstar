@@ -16,9 +16,6 @@ require (
 	github.com/delaneyj/toolbelt v0.5.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gorilla/sessions v1.4.0
-	github.com/nats-io/nats-server/v2 v2.11.6
-	github.com/nats-io/nats.go v1.43.0
-	github.com/samber/lo v1.51.0
 	github.com/shirou/gopsutil/v4 v4.25.6
 	github.com/starfederation/datastar-go v1.0.1
 )
@@ -37,7 +34,6 @@ require (
 	github.com/bep/godartsass v1.2.0 // indirect
 	github.com/bep/godartsass/v2 v2.1.0 // indirect
 	github.com/bep/golibsass v1.2.0 // indirect
-	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/chainguard-dev/git-urls v1.0.2 // indirect
 	github.com/chewxy/math32 v1.11.1 // indirect
@@ -72,7 +68,6 @@ require (
 	github.com/gohugoio/hugo v0.134.3 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/go-dap v0.12.0 // indirect
-	github.com/google/go-tpm v0.9.5 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
@@ -89,12 +84,8 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mattn/go-zglob v0.0.6 // indirect
-	github.com/minio/highwayhash v1.0.3 // indirect
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
 	github.com/natefinch/atomic v1.0.1 // indirect
-	github.com/nats-io/jwt/v2 v2.7.4 // indirect
-	github.com/nats-io/nkeys v0.4.11 // indirect
-	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
@@ -129,7 +120,6 @@ require (
 	golang.org/x/telemetry v0.0.0-20250710130107-8d8967aff50b // indirect
 	golang.org/x/term v0.33.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
-	golang.org/x/time v0.12.0 // indirect
 	golang.org/x/tools v0.35.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect

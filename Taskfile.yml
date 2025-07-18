@@ -5,7 +5,6 @@ output: prefixed
 dotenv: ['.env']
 
 env:
-  NATS_PORT: 4222
   STATIC_DIR: "internal/ui/static"
 
 tasks:
