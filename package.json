@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "pnpm run build:lit && pnpm run build:styles",
+    "build:lit": "pnpm --filter @northstar/lit build",
+    "watch:lit": "pnpm --filter @northstar/lit build:dev",
+    "build:styles": "pnpm --filter @northstar/styles build",
+    "watch:styles": "pnpm --filter @northstar/styles build:dev"
+  },
+  "dependencies": {
+    "@northstar/lit": "link:internal/ui/libs/lit",
+    "@northstar/styles": "link:internal/ui"
+  }
+}

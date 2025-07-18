@@ -1,10 +1,9 @@
 @import "tailwindcss";
-
-@plugin "./daisyui/daisyui.js" {
+@plugin "daisyui" {
     themes: all;
 }
 
-@plugin "./daisyui/daisyui-theme.js" {
+@plugin "daisyui/theme" {
     name: "datastar";
 
     --color-base-100: "#0b1325";

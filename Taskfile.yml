@@ -20,15 +20,19 @@ tasks:
 
   build:styles:
     cmds:
-      - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css
-    sources:
-      - "./internal/ui/**/*.html"
-      - "./internal/ui/**/*.ts"
-      - "./internal/ui/**/*.templ"
-      - "./internal/ui/**/*.go"
-    generates:
-      - "{{.STATIC_DIR}}/index.css"
+      - pnpm run build:styles
 
+  live:styles:
+    cmds:
+      - pnpm run watch:styles
+
+  build:lit:
+    cmds:
+      - pnpm run build:lit
+
+  live:lit:
+    cmds:
+      - pnpm run watch:lit
 
   build:
     cmds:
@@ -36,6 +40,7 @@ tasks:
     deps:
       - build:templ
       - build:styles
+      - build:lit
 
   # Use this task to debug with the delve debugger
   debug:
@@ -80,6 +85,8 @@ tasks:
 
   live:
     deps:
+      - live:lit
+      - live:styles
       - live:templ
       - live:reload
       - live:server

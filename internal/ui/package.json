@@ -1,0 +1,19 @@
+{
+  "name": "@northstar/styles",
+  "version": "0.6.0",
+  "type": "module",
+  "scripts":{
+    "dev": "tailwindcss -c tailwind.config.js -i styles/styles.css -o static/index.css --watch",
+    "build": "tailwindcss -c tailwind.config.js -i styles/styles.css -o static/index.css",
+    "build:dev": "tailwindcss -c tailwind.config.js -i styles/styles.css -o static/index.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.7",
+    "autoprefixer": "^10.4.21",
+    "daisyui": "5.0.35",
+    "esbuild": "^0.25.4",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5.8.3"
+  }
+}
