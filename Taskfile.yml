@@ -12,34 +12,22 @@ tasks:
   build:templ:
     cmds:
       - go tool templ generate
-    sources:
-      - "**/*.templ"
-    generates:
-      - "**/*_templ.go"
-
-  build:styles:
-    cmds:
-      - pnpm run build:styles
-
-  live:styles:
-    cmds:
-      - pnpm run watch:styles
 
   build:lit:
     cmds:
       - pnpm run build:lit
 
-  live:lit:
+  build:styles:
     cmds:
-      - pnpm run watch:lit
+      - pnpm run build:styles
 
   build:
     cmds:
       - go build -tags=prod -o bin/main ./cmd/web
     deps:
       - build:templ
-      - build:styles
       - build:lit
+      - build:styles
 
   # Use this task to debug with the delve debugger
   debug:
@@ -53,12 +41,20 @@ tasks:
     cmds:
       - go tool templ generate --watch --proxy="http://localhost:${PORT:-8080}" --open-browser=false
 
+  live:lit:
+    cmds:
+      - pnpm run watch:lit
+
+  live:styles:
+    cmds:
+      - pnpm run watch:styles
+
   live:server:
     cmds:
       - |
         go tool air  \
-         -build.cmd "go build -tags=dev -o tmp/server/bin/main ./cmd/web" \
-         -build.bin "tmp/server/bin/main" \
+         -build.cmd "go build -tags=dev -o tmp/bin/main ./cmd/web" \
+         -build.bin "tmp/bin/main" \
          -build.delay "100" \
          -build.exclude_dir "data,node_modules,internal/ui/libs/datastar/node_modules,internal/ui/libs/lit/node_modules" \
          -build.include_ext "go" \
@@ -84,9 +80,9 @@ tasks:
 
   live:
     deps:
+      - live:templ
       - live:lit
       - live:styles
-      - live:templ
       - live:reload
       - live:server
 
