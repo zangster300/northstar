@@ -1,0 +1,40 @@
+package pages
+
+import (
+	"northstar/internal/features/common/components"
+	"northstar/internal/features/common/layouts"
+)
+
+templ SortableInitial() {
+	@layouts.Base("Sortable Example") {
+		<script>
+			function handleScriptErr() {
+				const message = document.createElement('div')
+
+				const span1 = document.createElement('span')
+				const span2 = document.createElement('span')
+				span1.innerText = "To view this specific example, you will need pnpm!"
+				span2.innerText = "Check out the README in `internal/` to learn more"
+
+				message.classList.add("flex", "flex-col", "gap-2", "items-center")
+
+				message.appendChild(span1)
+				message.appendChild(span2)
+
+				document.querySelector("article").appendChild(message)
+			}
+		</script>
+		@components.Navigation("/sortable")
+		<article class="prose mx-auto m-2">
+			<sortable-example
+				class="flex flex-col gap-8"
+				data-signals="{title: 'Item Info', info:'', items: [{name: 'item one'}, {name: 'item two'}, {name: 'item three'}, {name: 'item four'}, {name: 'item five'}]}"
+				data-attr-title="$title"
+				data-attr-value="$info"
+				data-attr-items="$items"
+				data-on-change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
+			></sortable-example>
+			<script type="module" src="/static/lit.js" onerror="handleScriptErr()"></script>
+		</article>
+	}
+}

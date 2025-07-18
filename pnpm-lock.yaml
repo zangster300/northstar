@@ -9,13 +9,13 @@ importers:
   .:
     dependencies:
       '@northstar/lit':
-        specifier: link:internal/ui/libs/lit
-        version: link:internal/ui/libs/lit
+        specifier: link:internal/lit
+        version: link:internal/lit
       '@northstar/styles':
-        specifier: link:internal/ui
-        version: link:internal/ui
+        specifier: link:internal/features/common/styles
+        version: link:internal/features/common/styles
 
-  internal/ui:
+  internal/features/common/styles:
     devDependencies:
       '@tailwindcss/cli':
         specifier: ^4.1.7
@@ -39,11 +39,8 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  internal/ui/libs/lit:
+  internal/lit:
     dependencies:
-      datastar:
-        specifier: github:starfederation/datastar
-        version: https://codeload.github.com/starfederation/datastar/tar.gz/33e7985b7fe60e9e41a5b9b56ef45d1763e9d831
       lit:
         specifier: ^3.3.1
         version: 3.3.1
@@ -560,10 +557,6 @@ packages:
 
   daisyui@5.0.35:
     resolution: {integrity: sha512-AWi11n/x5++mps55jcwrBf0Lmip1euWY0FYcH/05SFGmoqrU7S7/aIUWaiaeqlJ5EcmEZ/7zEY73aOxMv6hcIg==}
-
-  datastar@https://codeload.github.com/starfederation/datastar/tar.gz/33e7985b7fe60e9e41a5b9b56ef45d1763e9d831:
-    resolution: {tarball: https://codeload.github.com/starfederation/datastar/tar.gz/33e7985b7fe60e9e41a5b9b56ef45d1763e9d831}
-    version: 0.0.0
 
   detect-libc@1.0.3:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
@@ -1187,8 +1180,6 @@ snapshots:
   chownr@3.0.0: {}
 
   daisyui@5.0.35: {}
-
-  datastar@https://codeload.github.com/starfederation/datastar/tar.gz/33e7985b7fe60e9e41a5b9b56ef45d1763e9d831: {}
 
   detect-libc@1.0.3: {}
 
