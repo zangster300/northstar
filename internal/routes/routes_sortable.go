@@ -3,8 +3,9 @@ package routes
 import (
 	"net/http"
 
+	"northstar/internal/ui/pages"
+
 	"github.com/go-chi/chi/v5"
-	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
 func setupSortableRoute(router chi.Router) error {

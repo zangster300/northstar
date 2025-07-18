@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/ui/components"
-	"github.com/zangster300/northstar/internal/ui/layouts"
+	"northstar/internal/ui/components"
+	"northstar/internal/ui/layouts"
 )
 
 type CounterSignals struct {

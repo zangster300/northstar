@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/zangster300/northstar/internal/ui/components"
-	"github.com/zangster300/northstar/internal/ui/layouts"
+	"northstar/internal/ui/components"
+	"northstar/internal/ui/layouts"
 )
 
 func SortableInitial() templ.Component {

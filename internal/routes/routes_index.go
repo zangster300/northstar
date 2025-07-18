@@ -10,10 +10,11 @@ import (
 	"github.com/delaneyj/toolbelt"
 	datastar "github.com/starfederation/datastar-go/datastar"
 
+	"northstar/internal/ui/components"
+	"northstar/internal/ui/pages"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	"github.com/zangster300/northstar/internal/ui/components"
-	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
 // In-memory storage for todo data

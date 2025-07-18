@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"sync/atomic"
 
+	"northstar/internal/ui/pages"
+
 	"github.com/Jeffail/gabs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
 func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
