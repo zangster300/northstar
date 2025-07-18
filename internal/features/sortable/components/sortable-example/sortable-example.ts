@@ -19,7 +19,7 @@ export class SortableExample extends LitElement {
     new Sortable(this.sortContainer, {
       animation: 150,
       ghostClass: 'opacity-25',
-      onEnd: (evt: Sortable.SortableEvent) => {
+      onEnd: (evt) => {
         this.value = `Moved from ${evt.oldIndex} to ${evt.newIndex}`
         this.dispatchEvent(
           new CustomEvent('change', {
@@ -37,15 +37,13 @@ export class SortableExample extends LitElement {
   render() {
     console.log(this)
     return html`
-      <div class="flex p-10 border border-primary rounded">
-        <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-2 p-4 border border-primary rounded">
           <div class="text-lg">${this.title}: <span class="font-bold">${this.value}</span></div>
           <div>Open your console to see event results</div>
           <div id="sortable-container" class="flex flex-col gap-4">
-            ${this.items.map(
+            ${this.items?.length > 0 && this.items.map(
               (item) => html` <div class="bg-primary text-primary-content p-4 rounded-box">${item.name}</div> `,
             )}
-          </div>
         </div>
       </div>
     `

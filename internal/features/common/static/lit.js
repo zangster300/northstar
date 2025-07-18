@@ -1857,15 +1857,13 @@ let Et = class extends It {
   }
   render() {
     return console.log(this), We`
-      <div class="flex p-10 border border-primary rounded">
-        <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-2 p-4 border border-primary rounded">
           <div class="text-lg">${this.title}: <span class="font-bold">${this.value}</span></div>
           <div>Open your console to see event results</div>
           <div id="sortable-container" class="flex flex-col gap-4">
-            ${this.items.map(
+            ${this.items?.length > 0 && this.items.map(
       (i) => We` <div class="bg-primary text-primary-content p-4 rounded-box">${i.name}</div> `
     )}
-          </div>
         </div>
       </div>
     `;

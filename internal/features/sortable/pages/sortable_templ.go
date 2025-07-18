@@ -54,7 +54,7 @@ func SortableInitial() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: 'item one'}, {name: 'item two'}, {name: 'item three'}, {name: 'item four'}, {name: 'item five'}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"$items\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
