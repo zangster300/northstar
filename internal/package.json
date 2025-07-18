@@ -18,7 +18,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode dev",
     "build:dev": "vite build --mode dev --watch",
     "preview": "vite preview"
   },
