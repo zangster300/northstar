@@ -5,5 +5,8 @@ import (
 )
 
 func SetupRoutes(router chi.Router) error {
-	return setupMonitorRoute(router)
+	router.Get("/monitor", HandleMonitorPage)
+	router.Get("/monitor/events", HandleMonitorEvents)
+	
+	return nil
 }

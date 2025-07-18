@@ -101,20 +101,20 @@ func (ts *TodoStore) Set(sessionID string, mvc *components.TodoMVC) {
 	}
 }
 
-func setupIndexRoute(router chi.Router, store sessions.Store) error {
-	resetMVC := func(mvc *components.TodoMVC) {
-		mvc.Mode = components.TodoViewModeAll
-		mvc.Todos = []*components.Todo{
-			{Text: "Learn any backend language", Completed: true},
-			{Text: "Learn Datastar", Completed: false},
-			{Text: "Create Hypermedia", Completed: false},
-			{Text: "???", Completed: false},
-			{Text: "Profit", Completed: false},
-		}
-		mvc.EditingIdx = -1
+func resetMVC(mvc *components.TodoMVC) {
+	mvc.Mode = components.TodoViewModeAll
+	mvc.Todos = []*components.Todo{
+		{Text: "Learn any backend language", Completed: true},
+		{Text: "Learn Datastar", Completed: false},
+		{Text: "Create Hypermedia", Completed: false},
+		{Text: "???", Completed: false},
+		{Text: "Profit", Completed: false},
 	}
+	mvc.EditingIdx = -1
+}
 
-	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error) {
+func getMVCSession(store sessions.Store) func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error) {
+	return func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error) {
 		sessionID, err := upsertSessionID(store, r, w)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to get session id: %w", err)
@@ -129,248 +129,250 @@ func setupIndexRoute(router chi.Router, store sessions.Store) error {
 
 		return sessionID, mvc, nil
 	}
+}
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.Index("Northstar").Render(r.Context(), w); err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+func routeIndex(w http.ResponseWriter, r *http.Request) (int, error) {
+	idx := chi.URLParam(r, "idx")
+	i, err := strconv.Atoi(idx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return 0, err
+	}
+	return i, nil
+}
+
+func HandleIndexPage(w http.ResponseWriter, r *http.Request) {
+	if err := pages.Index("Northstar").Render(r.Context(), w); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
+func HandleTodosSSE(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-	})
 
-	router.Route("/api", func(apiRouter chi.Router) {
-		apiRouter.Route("/todos", func(todosRouter chi.Router) {
-			todosRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		sse := datastar.NewSSE(w, r)
 
-				sessionID, mvc, err := mvcSession(w, r)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
+		// Subscribe to updates for this session
+		updateCh := globalTodoStore.Subscribe(sessionID)
+		defer globalTodoStore.Unsubscribe(sessionID)
+
+		// Send initial data
+		c := components.TodosMVCView(mvc)
+		if err := sse.PatchElementTempl(c); err != nil {
+			if err := sse.ConsoleError(err); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+			return
+		}
+
+		// Watch for updates
+		ctx := r.Context()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case update := <-updateCh:
+				if update.Data == nil {
+					continue
 				}
-
-				sse := datastar.NewSSE(w, r)
-
-				// Subscribe to updates for this session
-				updateCh := globalTodoStore.Subscribe(sessionID)
-				defer globalTodoStore.Unsubscribe(sessionID)
-
-				// Send initial data
-				c := components.TodosMVCView(mvc)
+				c := components.TodosMVCView(update.Data)
 				if err := sse.PatchElementTempl(c); err != nil {
 					if err := sse.ConsoleError(err); err != nil {
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 					}
 					return
 				}
+			}
+		}
+	}
+}
 
-				// Watch for updates
-				ctx := r.Context()
-				for {
-					select {
-					case <-ctx.Done():
-						return
-					case update := <-updateCh:
-						if update.Data == nil {
-							continue
-						}
-						c := components.TodosMVCView(update.Data)
-						if err := sse.PatchElementTempl(c); err != nil {
-							if err := sse.ConsoleError(err); err != nil {
-								http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-							}
-							return
-						}
-					}
+func HandleTodosReset(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		resetMVC(mvc)
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodosCancel(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+		sse := datastar.NewSSE(w, r)
+		if err != nil {
+			if err := sse.ConsoleError(err); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+			return
+		}
+
+		mvc.EditingIdx = -1
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodosSetMode(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		modeStr := chi.URLParam(r, "mode")
+		modeRaw, err := strconv.Atoi(modeStr)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		mode := components.TodoViewMode(modeRaw)
+		if mode < components.TodoViewModeAll || mode > components.TodoViewModeCompleted {
+			http.Error(w, "invalid mode", http.StatusBadRequest)
+			return
+		}
+
+		mvc.Mode = mode
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodoToggle(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+
+		sse := datastar.NewSSE(w, r)
+		if err != nil {
+			if err := sse.ConsoleError(err); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+			return
+		}
+
+		i, err := routeIndex(w, r)
+		if err != nil {
+			if err := sse.ConsoleError(err); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+			return
+		}
+
+		if i < 0 {
+			setCompletedTo := false
+			for _, todo := range mvc.Todos {
+				if !todo.Completed {
+					setCompletedTo = true
+					break
 				}
+			}
+			for _, todo := range mvc.Todos {
+				todo.Completed = setCompletedTo
+			}
+		} else {
+			todo := mvc.Todos[i]
+			todo.Completed = !todo.Completed
+		}
+
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodoEditStart(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		i, err := routeIndex(w, r)
+		if err != nil {
+			return
+		}
+
+		mvc.EditingIdx = i
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodoEditSave(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type Store struct {
+			Input string `json:"input"`
+		}
+		store := &Store{}
+
+		if err := datastar.ReadSignals(r, store); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if store.Input == "" {
+			return
+		}
+
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		i, err := routeIndex(w, r)
+		if err != nil {
+			return
+		}
+
+		if i >= 0 {
+			mvc.Todos[i].Text = store.Input
+		} else {
+			mvc.Todos = append(mvc.Todos, &components.Todo{
+				Text:      store.Input,
+				Completed: false,
 			})
+		}
+		mvc.EditingIdx = -1
 
-			todosRouter.Put("/reset", func(w http.ResponseWriter, r *http.Request) {
-				sessionID, mvc, err := mvcSession(w, r)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
+		globalTodoStore.Set(sessionID, mvc)
+	}
+}
+
+func HandleTodoDelete(mvcSession func(w http.ResponseWriter, r *http.Request) (string, *components.TodoMVC, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		i, err := routeIndex(w, r)
+		if err != nil {
+			return
+		}
+
+		sessionID, mvc, err := mvcSession(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if i >= 0 {
+			mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
+		} else {
+			// Filter out completed todos
+			var filteredTodos []*components.Todo
+			for _, todo := range mvc.Todos {
+				if !todo.Completed {
+					filteredTodos = append(filteredTodos, todo)
 				}
-
-				resetMVC(mvc)
-				globalTodoStore.Set(sessionID, mvc)
-			})
-
-			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
-
-				sessionID, mvc, err := mvcSession(w, r)
-				sse := datastar.NewSSE(w, r)
-				if err != nil {
-					if err := sse.ConsoleError(err); err != nil {
-						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-					}
-					return
-				}
-
-				mvc.EditingIdx = -1
-				globalTodoStore.Set(sessionID, mvc)
-			})
-
-			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
-
-				sessionID, mvc, err := mvcSession(w, r)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				modeStr := chi.URLParam(r, "mode")
-				modeRaw, err := strconv.Atoi(modeStr)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusBadRequest)
-					return
-				}
-
-				mode := components.TodoViewMode(modeRaw)
-				if mode < components.TodoViewModeAll || mode > components.TodoViewModeCompleted {
-					http.Error(w, "invalid mode", http.StatusBadRequest)
-					return
-				}
-
-				mvc.Mode = mode
-				globalTodoStore.Set(sessionID, mvc)
-			})
-
-			todosRouter.Route("/{idx}", func(todoRouter chi.Router) {
-				routeIndex := func(w http.ResponseWriter, r *http.Request) (int, error) {
-					idx := chi.URLParam(r, "idx")
-					i, err := strconv.Atoi(idx)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusBadRequest)
-						return 0, err
-					}
-					return i, nil
-				}
-
-				todoRouter.Post("/toggle", func(w http.ResponseWriter, r *http.Request) {
-					sessionID, mvc, err := mvcSession(w, r)
-
-					sse := datastar.NewSSE(w, r)
-					if err != nil {
-						if err := sse.ConsoleError(err); err != nil {
-							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-						}
-						return
-					}
-
-					i, err := routeIndex(w, r)
-					if err != nil {
-						if err := sse.ConsoleError(err); err != nil {
-							http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-						}
-						return
-					}
-
-					if i < 0 {
-						setCompletedTo := false
-						for _, todo := range mvc.Todos {
-							if !todo.Completed {
-								setCompletedTo = true
-								break
-							}
-						}
-						for _, todo := range mvc.Todos {
-							todo.Completed = setCompletedTo
-						}
-					} else {
-						todo := mvc.Todos[i]
-						todo.Completed = !todo.Completed
-					}
-
-					globalTodoStore.Set(sessionID, mvc)
-				})
-
-				todoRouter.Route("/edit", func(editRouter chi.Router) {
-					editRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-						sessionID, mvc, err := mvcSession(w, r)
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-
-						i, err := routeIndex(w, r)
-						if err != nil {
-							return
-						}
-
-						mvc.EditingIdx = i
-						globalTodoStore.Set(sessionID, mvc)
-					})
-
-					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
-						type Store struct {
-							Input string `json:"input"`
-						}
-						store := &Store{}
-
-						if err := datastar.ReadSignals(r, store); err != nil {
-							http.Error(w, err.Error(), http.StatusBadRequest)
-							return
-						}
-
-						if store.Input == "" {
-							return
-						}
-
-						sessionID, mvc, err := mvcSession(w, r)
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-
-						i, err := routeIndex(w, r)
-						if err != nil {
-							return
-						}
-
-						if i >= 0 {
-							mvc.Todos[i].Text = store.Input
-						} else {
-							mvc.Todos = append(mvc.Todos, &components.Todo{
-								Text:      store.Input,
-								Completed: false,
-							})
-						}
-						mvc.EditingIdx = -1
-
-						globalTodoStore.Set(sessionID, mvc)
-
-					})
-				})
-
-				todoRouter.Delete("/", func(w http.ResponseWriter, r *http.Request) {
-					i, err := routeIndex(w, r)
-					if err != nil {
-						return
-					}
-
-					sessionID, mvc, err := mvcSession(w, r)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-
-					if i >= 0 {
-						mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
-					} else {
-						// Filter out completed todos
-						var filteredTodos []*components.Todo
-						for _, todo := range mvc.Todos {
-							if !todo.Completed {
-								filteredTodos = append(filteredTodos, todo)
-							}
-						}
-						mvc.Todos = filteredTodos
-					}
-					globalTodoStore.Set(sessionID, mvc)
-				})
-			})
-		})
-	})
-
-	return nil
+			}
+			mvc.Todos = filteredTodos
+		}
+		globalTodoStore.Set(sessionID, mvc)
+	}
 }
 
 func MustJSONMarshal(v any) string {

@@ -5,5 +5,7 @@ import (
 )
 
 func SetupRoutes(router chi.Router) error {
-	return setupSortableRoute(router)
+	router.Get("/sortable", HandleSortablePage)
+	
+	return nil
 }

@@ -11,72 +11,67 @@ import (
 	"northstar/internal/features/monitor/pages"
 
 	"github.com/dustin/go-humanize"
-	"github.com/go-chi/chi/v5"
 	"github.com/starfederation/datastar-go/datastar"
 
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/mem"
 )
 
-func setupMonitorRoute(router chi.Router) error {
-	router.Get("/monitor", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.MonitorInitial().Render(r.Context(), w); err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
-	})
+func HandleMonitorPage(w http.ResponseWriter, r *http.Request) {
+	if err := pages.MonitorInitial().Render(r.Context(), w); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
 
-	router.Get("/monitor/events", func(w http.ResponseWriter, r *http.Request) {
-		memT := time.NewTicker(time.Second)
-		defer memT.Stop()
+func HandleMonitorEvents(w http.ResponseWriter, r *http.Request) {
+	memT := time.NewTicker(time.Second)
+	defer memT.Stop()
 
-		cpuT := time.NewTicker(time.Second)
-		defer cpuT.Stop()
+	cpuT := time.NewTicker(time.Second)
+	defer cpuT.Stop()
 
-		sse := datastar.NewSSE(w, r)
-		for {
-			select {
-			case <-r.Context().Done():
-				slog.Debug("client disconnected")
+	sse := datastar.NewSSE(w, r)
+	for {
+		select {
+		case <-r.Context().Done():
+			slog.Debug("client disconnected")
+			return
+
+		case <-memT.C:
+			vm, err := mem.VirtualMemory()
+			if err != nil {
+				slog.Error("unable to get mem stats", slog.String("error", err.Error()))
 				return
+			}
 
-			case <-memT.C:
-				vm, err := mem.VirtualMemory()
-				if err != nil {
-					slog.Error("unable to get mem stats", slog.String("error", err.Error()))
-					return
-				}
+			memStats := pages.SystemMonitorSignals{
+				MemTotal:       humanize.Bytes(vm.Total),
+				MemUsed:        humanize.Bytes(vm.Used),
+				MemUsedPercent: fmt.Sprintf("%.2f%%", vm.UsedPercent),
+			}
 
-				memStats := pages.SystemMonitorSignals{
-					MemTotal:       humanize.Bytes(vm.Total),
-					MemUsed:        humanize.Bytes(vm.Used),
-					MemUsedPercent: fmt.Sprintf("%.2f%%", vm.UsedPercent),
-				}
+			if err := sse.MarshalAndPatchSignals(memStats); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
 
-				if err := sse.MarshalAndPatchSignals(memStats); err != nil {
-					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				}
+		case <-cpuT.C:
+			cpuTimes, err := cpu.Times(false)
+			if err != nil {
+				slog.Error("unable to get cpu stats", slog.String("error", err.Error()))
+				return
+			}
 
-			case <-cpuT.C:
-				cpuTimes, err := cpu.Times(false)
-				if err != nil {
-					slog.Error("unable to get cpu stats", slog.String("error", err.Error()))
-					return
-				}
+			cpuStats := pages.SystemMonitorSignals{
+				CpuUser:   relativeTime(cpuTimes[0].User),
+				CpuSystem: relativeTime(cpuTimes[0].System),
+				CpuIdle:   relativeTime(cpuTimes[0].Idle),
+			}
 
-				cpuStats := pages.SystemMonitorSignals{
-					CpuUser:   relativeTime(cpuTimes[0].User),
-					CpuSystem: relativeTime(cpuTimes[0].System),
-					CpuIdle:   relativeTime(cpuTimes[0].Idle),
-				}
-
-				if err := sse.MarshalAndPatchSignals(cpuStats); err != nil {
-					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				}
+			if err := sse.MarshalAndPatchSignals(cpuStats); err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		}
-	})
-
-	return nil
+	}
 }
 
 func relativeTime(totalSeconds float64) string {
