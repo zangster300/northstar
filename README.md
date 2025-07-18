@@ -127,6 +127,7 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 
 ## Client
 
+- [datastar](https://www.jsdelivr.com/package/gh/starfederation/datastar)
 - [tailwindcss](https://tailwindcss.com/)
 - [daisyui](https://daisyui.com/)
 - [esbuild](https://esbuild.github.io/)

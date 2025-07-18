@@ -20,9 +20,7 @@ This directory is responsible for different layouts across web pages of your sit
 This directory serves as an entrypoint to be used for storage of any JS/TS libraries needed for the project to run
 
 Currently it is being used to hold the following:
-
-- Datastar as a vendor dependency from the `npm` registry - [NOTE](./libs/datastar/README.md)
-- Web Components powered by Lit-html
+- Web Components powered by [lit](https://lit.dev/)
 
 ## Pages
 
