@@ -7,7 +7,7 @@
     "watch:styles": "pnpm --filter @northstar/styles build:dev"
   },
   "dependencies": {
-    "@northstar/lit": "link:internal/lit",
+    "@northstar/lit": "link:internal",
     "@northstar/styles": "link:internal/features/common/styles"
   }
 }
