@@ -15,7 +15,6 @@ func CreateDiaryEntry(userUUID, content string) error {
 	defer userdb.CloseUserDatabase(db)
 
 	entry := &userdb.DiaryEntry{
-		UserUUID:  userUUID,
 		Content:   content,
 		CreatedAt: time.Now(),
 	}
@@ -35,7 +34,7 @@ func GetDiaryEntries(userUUID string) ([]userdb.DiaryEntry, error) {
 	defer userdb.CloseUserDatabase(db)
 
 	var entries []userdb.DiaryEntry
-	if err := db.Where("user_uuid = ?", userUUID).Order("created_at DESC").Find(&entries).Error; err != nil {
+	if err := db.Order("created_at DESC").Find(&entries).Error; err != nil {
 		return nil, fmt.Errorf("failed to get diary entries: %w", err)
 	}
 
