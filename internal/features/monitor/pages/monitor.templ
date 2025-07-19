@@ -17,10 +17,10 @@ type SystemMonitorSignals struct {
 
 templ MonitorInitial() {
 	@layouts.Base("System Monitoring Example") {
-		@components.Navigation("/monitor")
+		@components.Navigation("/")
 		<div
 			id="container"
-			data-on-load={ datastar.GetSSE("/monitor/events") }
+			data-on-load={ datastar.GetSSE("/events") }
 			class="h-screen flex justify-center items-center"
 			data-signals="{memTotal:'', memUsed:'', memUsedPercent:'', cpuUser:'', cpuSystem:'', cpuIdle:''}"
 		>

@@ -10,9 +10,7 @@ func getNavClass(href, currentPath string) string {
 templ Navigation(currentPath string) {
 	<nav class="navbar bg-base-200 rounded-box justify-center my-2">
 		<ul class="menu menu-horizontal">
-			<li><a href="/" class={ getNavClass("/", currentPath) }>Todo Example</a></li>
-			<li><a href="/counter" class={ getNavClass("/counter", currentPath) }>Counter Example</a></li>
-			<li><a href="/monitor" class={ getNavClass("/monitor", currentPath) }>System Monitoring Example</a></li>
+			<li><a href="/" class={ getNavClass("/", currentPath) }>System Monitoring Example</a></li>
 			<li><a href="/sortable" class={ getNavClass("/sortable", currentPath) }>Sortable Example</a></li>
 		</ul>
 	</nav>

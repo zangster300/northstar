@@ -10,16 +10,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"northstar/internal/features/counter"
 	"northstar/internal/features/monitor"
 	"northstar/internal/features/sortable"
-	"northstar/internal/features/todo"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/gorilla/sessions"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -73,14 +69,8 @@ func run(ctx context.Context) error {
 
 		router.Handle("/static/*", static())
 
-		// Setup session store
-		sessionStore := sessions.NewCookieStore([]byte("session-secret"))
-		sessionStore.MaxAge(int(24 * time.Hour / time.Second))
-
 		// Setup feature routes
 		if err := errors.Join(
-			todo.SetupRoutes(router, sessionStore),
-			counter.SetupRoutes(router, sessionStore),
 			monitor.SetupRoutes(router),
 			sortable.SetupRoutes(router),
 		); err != nil {
