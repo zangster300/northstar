@@ -9,6 +9,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"northstar/internal/features/userdb"
 )
 
 const (
@@ -56,6 +58,17 @@ func CreateUser(username, password string) (*User, error) {
 	}
 
 	if err := db.Create(user).Error; err != nil {
+		return nil, err
+	}
+
+	if err := userdb.InitUserDatabase(user.UUID); err != nil {
+		if rollbackErr := db.Delete(user).Error; rollbackErr != nil {
+			slog.Error("Failed to rollback user creation after database init failure",
+				slog.String("username", username),
+				slog.String("uuid", user.UUID),
+				slog.Any("rollback_error", rollbackErr),
+				slog.Any("original_error", err))
+		}
 		return nil, err
 	}
 
