@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"northstar/internal/features/auth"
+	"northstar/internal/features/diary"
 	"northstar/internal/features/monitor"
 	"northstar/internal/features/sortable"
 
@@ -78,6 +79,7 @@ func run(ctx context.Context) error {
 			r.Use(auth.RequireAuth)
 
 			if err := errors.Join(
+				diary.SetupRoutes(r),
 				monitor.SetupRoutes(r),
 				sortable.SetupRoutes(r),
 			); err != nil {

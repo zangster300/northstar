@@ -1,0 +1,63 @@
+package pages
+
+import (
+	"northstar/internal/features/common/components"
+	"northstar/internal/features/common/layouts"
+	"northstar/internal/features/userdb"
+)
+
+templ DiaryPage(entries []userdb.DiaryEntry) {
+	@layouts.Base("Diary") {
+		@components.Navigation("/diary")
+		<article class="prose mx-auto m-2">
+			<h1>My Diary</h1>
+			@DiaryContent(entries)
+		</article>
+	}
+}
+
+templ DiaryContent(entries []userdb.DiaryEntry) {
+	<div id="diary-content">
+		<form data-on-submit="@post('/diary/submit', {contentType: 'form'})" class="mb-8">
+			<div class="form-control w-full">
+				<label class="label">
+					<span class="label-text">What's on your mind?</span>
+				</label>
+				<textarea 
+					name="content" 
+					required 
+					class="textarea textarea-bordered w-full h-32" 
+					placeholder="Write your thoughts here..."
+				></textarea>
+			</div>
+			<div class="form-control mt-4">
+				<button type="submit" class="btn btn-primary">Save Entry</button>
+			</div>
+		</form>
+
+		<div class="divider">Your Entries</div>
+		
+		if len(entries) == 0 {
+			<div class="alert alert-info">
+				<span>No diary entries yet. Write your first entry above!</span>
+			</div>
+		} else {
+			<div class="space-y-4">
+				for _, entry := range entries {
+					@DiaryEntryCard(entry)
+				}
+			</div>
+		}
+	</div>
+}
+
+templ DiaryEntryCard(entry userdb.DiaryEntry) {
+	<div class="card bg-base-100 shadow-md">
+		<div class="card-body">
+			<div class="text-sm text-base-content/70 mb-2">
+				{ entry.CreatedAt.Format("January 2, 2006 at 3:04 PM") }
+			</div>
+			<p class="whitespace-pre-wrap">{ entry.Content }</p>
+		</div>
+	</div>
+}
