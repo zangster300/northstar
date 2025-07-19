@@ -1,0 +1,60 @@
+package pages
+
+import "northstar/internal/features/common/layouts"
+
+templ SignupPage(errorMsg string) {
+	@layouts.Base("Sign Up - Northstar") {
+		<div class="min-h-screen flex items-center justify-center bg-base-200">
+			<div class="card w-full max-w-md bg-base-100 shadow-xl">
+				<div class="card-body">
+					<h2 class="card-title justify-center text-2xl mb-6">Sign Up</h2>
+					
+					if errorMsg != "" {
+						<div class="alert alert-error mb-4">
+							<span>{ errorMsg }</span>
+						</div>
+					}
+					
+					<form method="POST" action="/auth/signup" class="space-y-4">
+						<div class="form-control">
+							<label class="label">
+								<span class="label-text">Username</span>
+							</label>
+							<input type="text" name="username" class="input input-bordered w-full" required/>
+							<label class="label">
+								<span class="label-text-alt">At least 3 characters, letters, numbers, and underscores only</span>
+							</label>
+						</div>
+						
+						<div class="form-control">
+							<label class="label">
+								<span class="label-text">Password</span>
+							</label>
+							<input type="password" name="password" class="input input-bordered w-full" required/>
+							<label class="label">
+								<span class="label-text-alt">At least 8 characters</span>
+							</label>
+						</div>
+						
+						<div class="form-control">
+							<label class="label">
+								<span class="label-text">Confirm Password</span>
+							</label>
+							<input type="password" name="confirm_password" class="input input-bordered w-full" required/>
+						</div>
+						
+						<div class="form-control mt-6">
+							<button type="submit" class="btn btn-primary">Sign Up</button>
+						</div>
+					</form>
+					
+					<div class="divider"></div>
+					
+					<div class="text-center">
+						<p>Already have an account? <a href="/auth/login" class="link link-primary">Login</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

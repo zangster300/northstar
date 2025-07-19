@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"northstar/internal/features/auth"
 	"northstar/internal/features/monitor"
 	"northstar/internal/features/sortable"
 
@@ -69,13 +70,20 @@ func run(ctx context.Context) error {
 
 		router.Handle("/static/*", static())
 
-		// Setup feature routes
-		if err := errors.Join(
-			monitor.SetupRoutes(router),
-			sortable.SetupRoutes(router),
-		); err != nil {
-			return fmt.Errorf("error setting up routes: %w", err)
+		if err := auth.SetupRoutes(router); err != nil {
+			return fmt.Errorf("error setting up auth routes: %w", err)
 		}
+
+		router.Group(func(r chi.Router) {
+			r.Use(auth.RequireAuth)
+
+			if err := errors.Join(
+				monitor.SetupRoutes(r),
+				sortable.SetupRoutes(r),
+			); err != nil {
+				slog.Error("error setting up feature routes", slog.Any("error", err))
+			}
+		})
 
 		srv := &http.Server{
 			Addr:     "0.0.0.0:" + getPort(),

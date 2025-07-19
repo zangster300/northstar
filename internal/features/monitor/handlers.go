@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"northstar/internal/features/auth"
 	"northstar/internal/features/monitor/pages"
 
 	"github.com/dustin/go-humanize"
@@ -18,6 +19,13 @@ import (
 )
 
 func HandleMonitorPage(w http.ResponseWriter, r *http.Request) {
+	// example of getting user from context
+	if user, ok := auth.GetUserFromContext(r.Context()); ok {
+		slog.Info("User accessed monitor page",
+			slog.String("username", user.Username),
+			slog.String("uuid", user.UUID))
+	}
+
 	if err := pages.MonitorInitial().Render(r.Context(), w); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}

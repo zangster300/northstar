@@ -36,7 +36,7 @@ func Navigation(currentPath string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"navbar bg-base-200 rounded-box justify-center my-2\"><ul class=\"menu menu-horizontal\"><li>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"navbar bg-base-200 rounded-box justify-between my-2\"><ul class=\"menu menu-horizontal\"><li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +80,7 @@ func Navigation(currentPath string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\">Sortable Example</a></li></ul></nav>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\">Sortable Example</a></li></ul><div class=\"flex-none\"><form method=\"POST\" action=\"/auth/logout\" class=\"inline\"><button type=\"submit\" class=\"btn btn-outline btn-sm\">Logout</button></form></div></nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

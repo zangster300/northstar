@@ -1,0 +1,49 @@
+package pages
+
+import "northstar/internal/features/common/layouts"
+
+templ LoginPage(redirect string, errorMsg string) {
+	@layouts.Base("Login - Northstar") {
+		<div class="min-h-screen flex items-center justify-center bg-base-200">
+			<div class="card w-full max-w-md bg-base-100 shadow-xl">
+				<div class="card-body">
+					<h2 class="card-title justify-center text-2xl mb-6">Login</h2>
+					
+					if errorMsg != "" {
+						<div class="alert alert-error mb-4">
+							<span>{ errorMsg }</span>
+						</div>
+					}
+					
+					<form method="POST" action="/auth/login" class="space-y-4">
+						<input type="hidden" name="redirect" value={ redirect }/>
+						
+						<div class="form-control">
+							<label class="label">
+								<span class="label-text">Username</span>
+							</label>
+							<input type="text" name="username" class="input input-bordered w-full" required/>
+						</div>
+						
+						<div class="form-control">
+							<label class="label">
+								<span class="label-text">Password</span>
+							</label>
+							<input type="password" name="password" class="input input-bordered w-full" required/>
+						</div>
+						
+						<div class="form-control mt-6">
+							<button type="submit" class="btn btn-primary">Login</button>
+						</div>
+					</form>
+					
+					<div class="divider"></div>
+					
+					<div class="text-center">
+						<p>Don't have an account? <a href="/auth/signup" class="link link-primary">Sign up</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

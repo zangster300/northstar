@@ -63,10 +63,15 @@ require (
 	github.com/gohugoio/hugo v0.134.3 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/go-dap v0.12.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
+	github.com/gorilla/sessions v1.4.0 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hookenz/gotailwind/v4 v4.1.11 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
@@ -75,15 +80,18 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/mattn/go-zglob v0.0.6 // indirect
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
 	github.com/natefinch/atomic v1.0.1 // indirect
+	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/radovskyb/watcher v1.0.7 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sajari/fuzzy v1.0.0 // indirect
@@ -114,6 +122,12 @@ require (
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/driver/sqlite v1.6.0 // indirect
+	gorm.io/gorm v1.30.0 // indirect
+	modernc.org/libc v1.65.10 // indirect
+	modernc.org/mathutil v1.7.1 // indirect
+	modernc.org/memory v1.11.0 // indirect
+	modernc.org/sqlite v1.38.0 // indirect
 	mvdan.cc/sh/v3 v3.11.0 // indirect
 )
 
