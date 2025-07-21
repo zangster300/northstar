@@ -36,16 +36,16 @@ func main() {
 
 	defer slog.Info("stopping server")
 
-	if err := run(context.Background()); err != nil && err != http.ErrServerClosed {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	if err := run(ctx); err != nil && err != http.ErrServerClosed {
 		slog.Error("error running server", slog.Any("error", err))
 		os.Exit(1)
 	}
 }
 
 func run(ctx context.Context) error {
-	sctx, stop := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
 	getPort := func() string {
 		if p, ok := os.LookupEnv("PORT"); ok {
 			return p
@@ -55,7 +55,7 @@ func run(ctx context.Context) error {
 
 	slog.Info("starting server on port :" + getPort())
 
-	eg, egctx := errgroup.WithContext(sctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		router := chi.NewMux()
 
