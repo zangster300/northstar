@@ -25,7 +25,6 @@ tasks:
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
-
   build:
     cmds:
       - go build -tags=prod -o bin/main ./cmd/web
@@ -44,6 +43,10 @@ tasks:
   live:templ:
     cmds:
       - go tool templ generate --watch --proxy="http://localhost:8080" --open-browser=false
+
+  live:styles:
+    cmds:
+      - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css -w
 
   live:server:
     cmds:
@@ -75,6 +78,7 @@ tasks:
   live:
     deps:
       - live:templ
+      - live:styles
       - live:reload
       - live:server
 
