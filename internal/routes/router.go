@@ -35,7 +35,7 @@ func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
 	}
 
 	ns.WaitForServer()
-	slog.Info(fmt.Sprintf("starting NATS on port :%d", natsPort))
+	slog.Info("NATS started", "port", natsPort)
 
 	sessionStore := sessions.NewCookieStore([]byte("session-secret"))
 	sessionStore.MaxAge(int(24 * time.Hour / time.Second))

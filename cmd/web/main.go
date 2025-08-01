@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -17,12 +18,16 @@ import (
 )
 
 func main() {
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: func() slog.Level {
-			logLvlStr := os.Getenv("LOG_LEVEL")
-			switch logLvlStr {
+			switch os.Getenv("LOG_LEVEL") {
 			case "DEBUG":
 				return slog.LevelDebug
+			case "INFO":
+				return slog.LevelInfo
 			case "WARN":
 				return slog.LevelWarn
 			case "ERROR":
@@ -34,61 +39,76 @@ func main() {
 	}))
 	slog.SetDefault(logger)
 
-	defer slog.Info("stopping server")
-
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
 	if err := run(ctx); err != nil && err != http.ErrServerClosed {
-		slog.Error("error running server", slog.Any("error", err))
+		slog.Error("error running server", "error", err)
 		os.Exit(1)
 	}
 }
 
 func run(ctx context.Context) error {
-	getPort := func() string {
-		if p, ok := os.LookupEnv("PORT"); ok {
-			return p
+	getEnv := func(key, fallback string) string {
+		if val, ok := os.LookupEnv(key); ok {
+			return val
 		}
-		return "8080"
+		return fallback
 	}
 
-	slog.Info("starting server on port :" + getPort())
+	host := getEnv("HOST", "0.0.0.0")
+	port := getEnv("PORT", "8080")
+
+	addr := fmt.Sprintf("%s:%s", host, port)
+	slog.Info("server started", "host", host, "port", port)
+	defer slog.Info("server shutdown complete")
 
 	eg, egctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		router := chi.NewMux()
 
-		router.Use(
-			middleware.Logger,
-			middleware.Recoverer,
-		)
-
-		router.Handle("/static/*", static())
-
-		if err := routes.SetupRoutes(egctx, router); err != nil {
-			return fmt.Errorf("error setting up routes: %w", err)
-		}
-
-		srv := &http.Server{
-			Addr:     "0.0.0.0:" + getPort(),
-			Handler:  router,
-			ErrorLog: slog.NewLogLogger(slog.Default().Handler(), slog.LevelError),
-		}
-
-		go func() {
-			<-egctx.Done()
-			if err := srv.Shutdown(context.Background()); err != nil {
-				log.Fatalf("error during shutdown: %v", err)
-			}
-		}()
-
-		return srv.ListenAndServe()
-	})
-
-	if err := eg.Wait(); err != nil {
-		return err
+	srv := &http.Server{
+		Addr:    addr,
+		Handler: setupRouter(egctx),
+		BaseContext: func(l net.Listener) context.Context {
+			return egctx
+		},
+		ErrorLog: slog.NewLogLogger(
+			slog.Default().Handler(),
+			slog.LevelError,
+		),
 	}
 
-	return nil
+	eg.Go(func() error {
+		err := srv.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			return fmt.Errorf("server error: %w", err)
+		}
+		return nil
+	})
+
+	eg.Go(func() error {
+		<-egctx.Done()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		slog.Debug("shutting down server...")
+
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			slog.Error("error during shutdown", "error", err)
+			return err
+		}
+
+		return nil
+	})
+
+	return eg.Wait()
+}
+
+func setupRouter(ctx context.Context) http.Handler {
+	router := chi.NewMux()
+	router.Use(
+		middleware.Logger,
+		middleware.Recoverer,
+	)
+	router.Handle("/static/*", static())
+	if err := routes.SetupRoutes(ctx, router); err != nil {
+		panic(fmt.Errorf("error setting up routes: %w", err))
+	}
+	return router
 }
