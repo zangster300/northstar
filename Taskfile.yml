@@ -42,7 +42,7 @@ tasks:
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:
     cmds:
-      - go tool templ generate --watch --proxy="http://localhost:8080" --open-browser=false
+      - go tool templ generate -watch -proxy="http://localhost:8080" -open-browser=false
 
   live:styles:
     cmds:
@@ -66,7 +66,7 @@ tasks:
     cmds:
       - |
         go tool air \
-        -build.cmd "go tool templ generate --notify-proxy" \
+        -build.cmd "go tool templ generate -notify-proxy" \
         -build.bin "true" \
         -build.delay "300" \
         -build.exclude_dir "" \
