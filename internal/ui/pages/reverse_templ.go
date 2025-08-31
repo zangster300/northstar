@@ -13,7 +13,7 @@ import (
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
 
-func SortablePage() templ.Component {
+func ReversePage() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -46,21 +46,17 @@ func SortablePage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\t\tfunction handleScriptErr() {\n\t\t\t\tconst message = document.createElement('div')\n\n\t\t\t\tconst span1 = document.createElement('span')\n\t\t\t\tconst span2 = document.createElement('span')\n\t\t\t\tspan1.innerText = \"To view this specific example, you will need pnpm!\"\n\t\t\t\tspan2.innerText = \"Check out the README in `internal/ui/libs/lit` to learn more\"\n\n\t\t\t\tmessage.classList.add(\"flex\", \"flex-col\", \"gap-2\", \"items-center\")\n\n\t\t\t\tmessage.appendChild(span1)\n\t\t\t\tmessage.appendChild(span2)\n\n\t\t\t\tdocument.querySelector(\"article\").appendChild(message)\n\t\t\t}\n\t\t</script> ")
+			templ_7745c5c3_Err = components.Navigation(components.PageReverse).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Navigation(components.PageSortable).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"h-screen flex justify-center items-center\"><div class=\"border border-primary rounded flex flex-col gap-2 p-8 w-80\"><label class=\"input\"><span class=\"label\">Reverse</span> <input type=\"text\" data-bind-_name=\"\"></label><p class=\"truncate\" data-signals-_reversed=\"\" data-text=\"$_reversed\"></p><reverse-component data-on-reverse=\"$_reversed = evt.detail.value\" data-attr-name=\"$_name\"></reverse-component></div></div><script type=\"module\" src=\"/static/web-components/index.js\" onerror=\"console.debug('what the f')\"></script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layouts.Base("Sortable").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layouts.Base("Reverse Web Component").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

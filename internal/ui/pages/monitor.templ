@@ -2,6 +2,7 @@ package pages
 
 import (
 	"github.com/starfederation/datastar-go/datastar"
+	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
 
@@ -14,15 +15,9 @@ type SystemMonitorSignals struct {
 	CpuIdle        string `json:"cpuIdle,omitempty"`
 }
 
-templ MonitorInitial() {
-	@layouts.Base("System Monitoring Example") {
-		<nav class="flex justify-center my-2">
-			<ul class="menu menu-vertical md:menu-horizontal bg-base-200 rounded-box">
-				<li class="hover:text-primary"><a href="/counter">Counter Example</a></li>
-				<li class="hover:text-primary"><a href="/">Todo Example</a></li>
-				<li class="hover:text-primary"><a href="/sortable">Sortable Example</a></li>
-			</ul>
-		</nav>
+templ MonitorPage() {
+	@layouts.Base("System Monitoring") {
+		@components.Navigation(components.PageMonitor)
 		<div
 			id="container"
 			data-on-load={ datastar.GetSSE("/monitor/events") }

@@ -6,7 +6,8 @@ data
 
 internal/ui/static/*
 !internal/ui/static/assets
-!internal/ui/static/datastar*
+!internal/ui/static/datastar
+!internal/ui/static/web-components
 
 # ------------------------------------------------------------------
 # Go

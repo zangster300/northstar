@@ -1,9 +1,12 @@
 package pages
 
-import "github.com/zangster300/northstar/internal/ui/layouts"
+import (
+	"github.com/zangster300/northstar/internal/ui/components"
+	"github.com/zangster300/northstar/internal/ui/layouts"
+)
 
-templ SortableInitial() {
-	@layouts.Base("Sortable Example") {
+templ SortablePage() {
+	@layouts.Base("Sortable") {
 		<script>
 			function handleScriptErr() {
 				const message = document.createElement('div')
@@ -21,13 +24,7 @@ templ SortableInitial() {
 				document.querySelector("article").appendChild(message)
 			}
 		</script>
-		<nav class="flex justify-center my-2">
-			<ul class="menu menu-vertical md:menu-horizontal bg-base-200 rounded-box">
-				<li class="hover:text-primary"><a href="/counter">Counter Example</a></li>
-				<li class="hover:text-primary"><a href="/monitor">System Monitoring Example</a></li>
-				<li class="hover:text-primary"><a href="/">Todo Example</a></li>
-			</ul>
-		</nav>
+		@components.Navigation(components.PageSortable)
 		<article class="prose mx-auto m-2">
 			<sortable-example
 				class="flex flex-col gap-8"

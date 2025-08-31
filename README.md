@@ -28,7 +28,7 @@ go mod tidy
 
 Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
 
-Use [live task](./Taskfile.yml#L75) from the [Taskfile](https://taskfile.dev/) to start the server
+Use [live task](./Taskfile.yml#L90) from the [Taskfile](https://taskfile.dev/) to start the server
 
 ```shell
 go tool task live
@@ -38,7 +38,7 @@ Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite we
 
 ## Debugging
 
-The [debug task](./Taskfile.yml#L37) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
+The [debug task](./Taskfile.yml#L48) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
 
 ```shell
 go tool task debug
@@ -69,7 +69,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#29) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
+The `task build` [task](./Taskfile.yml#39) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
 
 ## Docker
 
@@ -121,9 +121,11 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 > [!IMPORTANT]
 > To see these updates take place in realtime within the `TODO` example, make sure your browser is pointed to the real server and not the templ proxy server!
 
-## Web Components x Lit x Datastar
+## Web Components x Datastar
 
-[🔗 Web Components Setup](./internal/ui/libs/lit/README.md)
+[🔗 Vanilla Web Components Setup](./internal/ui/libs/web-components/README.md)
+
+[🔗 Lit Web Components Setup](./internal/ui/libs/lit/README.md)
 
 ## Client
 

@@ -45,6 +45,7 @@ func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
 		setupCounterRoute(router, sessionStore),
 		setupMonitorRoute(router),
 		setupSortableRoute(router),
+		setupReverseRoute(router),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}

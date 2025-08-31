@@ -92,7 +92,7 @@ func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.S
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.Index("Northstar").Render(r.Context(), w); err != nil {
+		if err := pages.IndexPage("Northstar").Render(r.Context(), w); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})

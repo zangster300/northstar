@@ -7,9 +7,9 @@ import (
 	"github.com/zangster300/northstar/internal/ui/pages"
 )
 
-func setupSortableRoute(router chi.Router) error {
-	router.Get("/sortable", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.SortablePage().Render(r.Context(), w); err != nil {
+func setupReverseRoute(router chi.Router) error {
+	router.Get("/reverse", func(w http.ResponseWriter, r *http.Request) {
+		if err := pages.ReversePage().Render(r.Context(), w); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})

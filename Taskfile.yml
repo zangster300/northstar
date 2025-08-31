@@ -25,12 +25,24 @@ tasks:
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
+  build:wc:
+    dir: internal/ui/libs/web-components
+    cmds:
+      - go run .
+    sources:
+      - "./internal/ui/libs/web-components/**/*.html"
+      - "./internal/ui/libs/web-components/**/*.css"
+      - "./internal/ui/libs/web-components/**/*.ts"
+    generates:
+      - "{{.STATIC_DIR}}/web-components/*"
+
   build:
     cmds:
       - go build -tags=prod -o bin/main ./cmd/web
     deps:
       - build:templ
       - build:styles
+      - build:wc
 
   # Use this task to debug with the delve debugger
   debug:

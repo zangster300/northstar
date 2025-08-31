@@ -5,22 +5,23 @@ go 1.24.2
 toolchain go1.24.3
 
 require (
-	github.com/go-chi/chi/v5 v5.2.2
+	github.com/go-chi/chi/v5 v5.2.3
 	golang.org/x/sync v0.16.0
 )
 
 require (
 	github.com/Jeffail/gabs/v2 v2.7.0
-	github.com/a-h/templ v0.3.924
+	github.com/a-h/templ v0.3.943
 	github.com/benbjohnson/hashfs v0.2.2
-	github.com/delaneyj/toolbelt v0.5.1
+	github.com/delaneyj/toolbelt v0.5.3
 	github.com/dustin/go-humanize v1.0.1
+	github.com/evanw/esbuild v0.25.9
 	github.com/gorilla/sessions v1.4.0
-	github.com/nats-io/nats-server/v2 v2.11.7
-	github.com/nats-io/nats.go v1.44.0
+	github.com/nats-io/nats-server/v2 v2.11.8
+	github.com/nats-io/nats.go v1.45.0
 	github.com/samber/lo v1.51.0
 	github.com/shirou/gopsutil/v4 v4.25.7
-	github.com/starfederation/datastar-go v1.0.1
+	github.com/starfederation/datastar-go v1.0.2
 )
 
 require (
@@ -52,7 +53,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/derekparker/trie v0.0.0-20230829180723-39f4de51ef7d // indirect
-	github.com/dlclark/regexp2 v1.11.4 // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/dominikbraun/graph v0.23.0 // indirect
 	github.com/ebitengine/purego v0.8.4 // indirect
 	github.com/elliotchance/orderedmap/v3 v3.1.0 // indirect
@@ -84,7 +85,7 @@ require (
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
-	github.com/lufia/plan9stats v0.0.0-20250317134145-8bc96cf8fc35 // indirect
+	github.com/lufia/plan9stats v0.0.0-20250827001030-24949be3fa54 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
@@ -122,7 +123,7 @@ require (
 	go.starlark.net v0.0.0-20231101134539-556fd59b42f6 // indirect
 	golang.org/x/arch v0.11.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/exp v0.0.0-20250808145144-a408d31f581a // indirect
+	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
@@ -131,10 +132,10 @@ require (
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
-	google.golang.org/protobuf v1.36.7 // indirect
+	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.66.6 // indirect
+	modernc.org/libc v1.66.8 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.38.2 // indirect

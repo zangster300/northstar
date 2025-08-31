@@ -1,0 +1,23 @@
+package components
+
+type page int
+
+const (
+	PageIndex page = iota
+	PageCounter
+	PageMonitor
+	PageReverse
+	PageSortable
+)
+
+templ Navigation(page page) {
+	<nav class="flex justify-center">
+		<ul class="menu menu-vertical md:menu-horizontal bg-base-200 rounded-box">
+			<li class={ "hover:text-primary", templ.KV("text-primary", page == PageIndex) }><a href="/">TODO</a></li>
+			<li class={ "hover:text-primary", templ.KV("text-primary", page == PageCounter) }><a href="/counter">Counter</a></li>
+			<li class={ "hover:text-primary", templ.KV("text-primary", page == PageMonitor) }><a href="/monitor">System Monitoring</a></li>
+			<li class={ "hover:text-primary", templ.KV("text-primary", page == PageReverse) }><a href="/reverse">Reverse</a></li>
+			<li class={ "hover:text-primary", templ.KV("text-primary", page == PageSortable) }><a href="/sortable">Sortable</a></li>
+		</ul>
+	</nav>
+}

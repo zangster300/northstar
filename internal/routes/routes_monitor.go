@@ -19,7 +19,7 @@ import (
 
 func setupMonitorRoute(router chi.Router) error {
 	router.Get("/monitor", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.MonitorInitial().Render(r.Context(), w); err != nil {
+		if err := pages.MonitorPage().Render(r.Context(), w); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})

@@ -14,7 +14,7 @@ import (
 func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
 
 	router.Get("/counter", func(w http.ResponseWriter, r *http.Request) {
-		if err := pages.CounterInitial().Render(r.Context(), w); err != nil {
+		if err := pages.CounterPage().Render(r.Context(), w); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})
