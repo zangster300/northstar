@@ -9,19 +9,42 @@ templ SortablePage() {
 	@layouts.Base("Sortable") {
 		<script>
 			function handleScriptErr() {
-				const message = document.createElement('div')
 
-				const span1 = document.createElement('span')
-				const span2 = document.createElement('span')
-				span1.innerText = "To view this specific example, you will need pnpm!"
-				span2.innerText = "Check out the README in `internal/ui/libs/lit` to learn more"
 
-				message.classList.add("flex", "flex-col", "gap-2", "items-center")
+				// <div class="alert alert-info">
+				// 	@icon("material-symbols:info")
+				// 	<p>
+				// 		<div class="text-sm">
+				// 			This mini application is driven by a
+				// 			<span class="italic font-bold uppercase text-primary">single get request!</span>
+				// 			<br/>
+				// 			As you interact with the UI, the backend state is updated and new partial HTML fragments are sent down to the client via Server-Sent Events.  You can make simple apps or full blown SPA replacements with this pattern.  Open your dev tools and watch the network tab to see the magic happen (you will want to look for the "/todos" Network/EventStream tab).
+				// 		</div>
+				// 	</p>
+				// </div>
 
-				message.appendChild(span1)
-				message.appendChild(span2)
+				const container = document.createElement('div')
+				container.classList.add("alert", "alert-warning")
 
-				document.querySelector("article").appendChild(message)
+				const iconify = document.createElement('iconify-icon')
+				iconify.setAttribute('icon', 'material-symbols:warning')
+				container.appendChild(iconify)
+
+				const messageContainer = document.createElement('div')
+
+				const para1 = document.createElement('span')
+				const para2 = document.createElement('span')
+				para1.innerText = "To enable this example, you will need to tap into the npm ecosystem"
+				para2.innerHTML = `If this interests you, check out this <a class="link" href="https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md">README</a> to learn more`
+
+				messageContainer.classList.add("flex", "flex-col", "gap-2", "items-center", "justify-center")
+
+				messageContainer.appendChild(para1)
+				messageContainer.appendChild(para2)
+
+				container.appendChild(messageContainer)
+
+				document.querySelector("article").appendChild(container)
 			}
 		</script>
 		@components.Navigation(components.PageSortable)

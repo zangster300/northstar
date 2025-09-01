@@ -22,6 +22,7 @@ tasks:
       - "./internal/ui/**/*.ts"
       - "./internal/ui/**/*.templ"
       - "./internal/ui/**/*.go"
+      - "./internal/ui/**/*.css"
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
@@ -50,6 +51,12 @@ tasks:
       - go tool dlv exec ./bin/main
     deps:
       - build
+
+  # Use this task to download latest version of client libs
+  download:
+    cmds:
+      - go run cmd/downloader/main.go
+
 
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:

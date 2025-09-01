@@ -1,8 +1,6 @@
 module github.com/zangster300/northstar
 
-go 1.24.2
-
-toolchain go1.24.3
+go 1.25
 
 require (
 	github.com/go-chi/chi/v5 v5.2.3
@@ -20,7 +18,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.11.8
 	github.com/nats-io/nats.go v1.45.0
 	github.com/samber/lo v1.51.0
-	github.com/shirou/gopsutil/v4 v4.25.7
+	github.com/shirou/gopsutil/v4 v4.25.8
 	github.com/starfederation/datastar-go v1.0.2
 )
 
