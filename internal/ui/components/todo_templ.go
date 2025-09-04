@@ -87,7 +87,7 @@ func TodosMVCView(mvc *TodoMVC) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = icon("material-symbols:info").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Icon("material-symbols:info").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -113,7 +113,7 @@ func TodosMVCView(mvc *TodoMVC) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icon("material-symbols:checklist").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Icon("material-symbols:checklist").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -266,7 +266,7 @@ func TodosMVCView(mvc *TodoMVC) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = icon("material-symbols:delete").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = Icon("material-symbols:delete").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -292,7 +292,7 @@ func TodosMVCView(mvc *TodoMVC) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icon("material-symbols:delete-sweep").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Icon("material-symbols:delete-sweep").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -467,12 +467,12 @@ func TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) templ.Compone
 				return templ_7745c5c3_Err
 			}
 			if todo.Completed {
-				templ_7745c5c3_Err = icon("material-symbols:check-box-outline").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = Icon("material-symbols:check-box-outline").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = icon("material-symbols:check-box-outline-blank").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = Icon("material-symbols:check-box-outline-blank").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -606,7 +606,7 @@ func TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) templ.Compone
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icon("material-symbols:close").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Icon("material-symbols:close").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

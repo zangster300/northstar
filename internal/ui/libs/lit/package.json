@@ -1,26 +1,10 @@
 {
   "name": "@northstar/lit",
-  "files": [
-    "dist"
-  ],
   "private": false,
-  "main": "dist/lit.js",
-  "module": "dist/lit.js",
-  "types": "dist/lit.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/lit.d.ts",
-      "import": "./dist/lit.js",
-      "require": "./dist/lit.js"
-    }
-  },
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "build:dev": "vite build --mode dev --watch",
-    "preview": "vite preview"
+    "build": "tsc"
   },
   "dependencies": {
     "lit": "^3.3.1",
@@ -29,8 +13,6 @@
   "devDependencies": {
     "@types/node": "^24.0.14",
     "@types/sortablejs": "^1.15.8",
-    "picocolors": "^1.1.1",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.4"
+    "typescript": "^5.8.3"
   }
 }

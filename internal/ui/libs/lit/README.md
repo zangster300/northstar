@@ -1,8 +1,6 @@
 # Lit
 
-This directory holds an example [library](https://vite.dev/guide/build.html#library-mode) setup for bundling web components driven by `Datastar`
-
-They are powered by [lit](https://lit.dev/)
+This directory holds an example [library](https://vite.dev/guide/build.html#library-mode) setup for creating web components powered by [lit](https://lit.dev/) and driven by Datastar
 
 # Setup
 
@@ -12,16 +10,8 @@ They are powered by [lit](https://lit.dev/)
 pnpm install
 ```
 
-2. Build and bundle
+2. [Build](../../../../cmd/web/build/main.go#L31)
 
 ```shell
-pnpm build
-```
-
-- A plugin has been included in [`vite.config.ts`](./vite.config.ts) that automatically copies bundled files to the [`static`](../../static/) directory
-
-# Development
-
-```shell
-pnpm build:dev
+go run cmd/web/build/main.go
 ```

@@ -51,7 +51,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 			<section class="flex flex-col gap-2">
 				<header class="flex flex-col gap-2">
 					<div class="alert alert-info">
-						@icon("material-symbols:info")
+						@Icon("material-symbols:info")
 						<p>
 							<div class="text-sm">
 								This mini application is driven by a
@@ -80,7 +80,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									data-indicator="toggleAllFetching"
 									data-attrs-disabled="$toggleAllFetching"
 								>
-									@icon("material-symbols:checklist")
+									@Icon("material-symbols:checklist")
 								</button>
 							</div>
 						}
@@ -130,7 +130,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										class="btn btn-error btn-xs join-item"
 										data-on-click={ datastar.DeleteSSE("/api/todos/-1") }
 									>
-										@icon("material-symbols:delete")
+										@Icon("material-symbols:delete")
 									</button>
 								</div>
 							}
@@ -139,7 +139,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									class="btn btn-warning btn-xs join-item"
 									data-on-click={ datastar.PutSSE("/api/todos/reset") }
 								>
-									@icon("material-symbols:delete-sweep")
+									@Icon("material-symbols:delete-sweep")
 								</button>
 							</div>
 						</div>
@@ -190,9 +190,9 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-indicator={ fetchingSignalName }
 			>
 				if todo.Completed {
-					@icon("material-symbols:check-box-outline")
+					@Icon("material-symbols:check-box-outline")
 				} else {
-					@icon("material-symbols:check-box-outline-blank")
+					@Icon("material-symbols:check-box-outline-blank")
 				}
 			</label>
 			<label
@@ -212,7 +212,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-indicator={ fetchingSignalName }
 				data-attrs-disabled={ fetchingSignalName + "" }
 			>
-				@icon("material-symbols:close")
+				@Icon("material-symbols:close")
 			</button>
 		</li>
 	}

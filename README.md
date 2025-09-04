@@ -26,9 +26,9 @@ go mod tidy
 
 # Development
 
-Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) and [templ](https://templ.guide/developer-tools/live-reload-with-other-tools#putting-it-all-together)'s proxy server
+Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air)
 
-Use [live task](./Taskfile.yml#L90) from the [Taskfile](https://taskfile.dev/) to start the server
+Use the [live task](./Taskfile.yml#L83) from the [Taskfile](https://taskfile.dev/) to start with live reload setup
 
 ```shell
 go tool task live
@@ -69,7 +69,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#39) will assemble and build a binary [with static assets embedded](./cmd/web/static_prod.go#L14)
+The `task build` [task](./Taskfile.yml#L39) will assemble and build a binary
 
 ## Docker
 
@@ -98,7 +98,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/routes/router.go#L26) file
+An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/routes/router.go#L43) file
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 

@@ -27,19 +27,18 @@ tasks:
       - "{{.STATIC_DIR}}/index.css"
 
   build:wc:
-    dir: internal/ui/libs/web-components
     cmds:
-      - go run .
+      - go run cmd/web/build/main.go
     sources:
-      - "./internal/ui/libs/web-components/**/*.html"
-      - "./internal/ui/libs/web-components/**/*.css"
-      - "./internal/ui/libs/web-components/**/*.ts"
+      - "./internal/ui/libs/**/**/*.html"
+      - "./internal/ui/libs/**/**/*.css"
+      - "./internal/ui/libs/**/**/*.ts"
     generates:
-      - "{{.STATIC_DIR}}/web-components/*"
+      - "{{.STATIC_DIR}}/libs/**"
 
   build:
     cmds:
-      - go build -tags=prod -o bin/main ./cmd/web
+      - go build -o bin/main ./cmd/web
     deps:
       - build:templ
       - build:styles
@@ -61,44 +60,31 @@ tasks:
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:
     cmds:
-      - go tool templ generate -watch -proxy="http://localhost:8080" -open-browser=false
+      - go tool templ generate -watch
 
   live:styles:
     cmds:
       - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css -w
+  
+  live:wc:
+    cmds:
+      - go run cmd/web/build/main.go -watch
 
   live:server:
     cmds:
       - |
         go tool air  \
-         -build.cmd "go build -tags=dev -o tmp/bin/main ./cmd/web" \
+         -build.cmd "go build -o tmp/bin/main ./cmd/web" \
          -build.bin "tmp/bin/main" \
-         -build.delay "100" \
          -build.exclude_dir "data,node_modules,internal/ui/libs/datastar/node_modules,internal/ui/libs/lit/node_modules" \
-         -build.include_ext "go" \
-         -build.stop_on_error "false" \
-         -build.send_interrupt "true" \
-         -build.kill_delay "200" \
+         -build.include_ext "go,templ,js,css" \
          -misc.clean_on_exit "true"
-
-  live:reload:
-    cmds:
-      - |
-        go tool air \
-        -build.cmd "go tool templ generate -notify-proxy" \
-        -build.bin "true" \
-        -build.delay "300" \
-        -build.exclude_dir "" \
-        -build.include_dir "$STATIC_DIR" \
-        -build.include_ext "js,css" \
-        -build.send_interrupt "true" \
-        -build.kill_delay "200"
 
   live:
     deps:
       - live:templ
       - live:styles
-      - live:reload
+      - live:wc
       - live:server
 
   run:

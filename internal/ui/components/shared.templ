@@ -2,7 +2,7 @@ package components
 
 import "fmt"
 
-templ icon(icon string, attrs ...string) {
+templ Icon(icon string, attrs ...string) {
 	<iconify-icon icon={ icon } { KVPairsAttrs(attrs...)... } noobserver></iconify-icon>
 }
 

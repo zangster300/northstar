@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/zangster300/northstar/internal/ui"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
@@ -50,7 +51,20 @@ func ReversePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"h-screen flex justify-center items-center\"><div class=\"border border-primary rounded flex flex-col gap-2 p-8 w-80\"><label class=\"input\"><span class=\"label\">Reverse</span> <input type=\"text\" data-bind-_name=\"\"></label><p class=\"truncate\" data-signals-_reversed=\"\" data-text=\"$_reversed\"></p><reverse-component data-on-reverse=\"$_reversed = evt.detail.value\" data-attr-name=\"$_name\"></reverse-component></div></div><script type=\"module\" src=\"/static/web-components/index.js\" onerror=\"console.debug('what the f')\"></script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"h-screen flex justify-center items-center\"><div class=\"border border-primary rounded flex flex-col gap-2 p-8 w-80\"><label class=\"input\"><span class=\"label\">Reverse</span> <input type=\"text\" data-bind-_name=\"\"></label><p class=\"truncate\" data-signals-_reversed=\"\" data-text=\"$_reversed\"></p><reverse-component data-on-reverse=\"$_reversed = evt.detail.value\" data-attr-name=\"$_name\"></reverse-component></div></div><script type=\"module\" src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(ui.StaticPath("libs/web-components.js"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/reverse.templ`, Line: 24, Col: 69}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"></script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -6,18 +6,35 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
+	"github.com/benbjohnson/hashfs"
 	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/embeddednats"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	natsserver "github.com/nats-io/nats-server/v2/server"
+	"github.com/starfederation/datastar-go/datastar"
+	"github.com/zangster300/northstar/internal/ui"
 )
 
 func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
+
+	var hotReloadOnce sync.Once
+	router.Get("/reload", func(w http.ResponseWriter, r *http.Request) {
+		sse := datastar.NewSSE(w, r)
+		hotReloadOnce.Do(func() {
+			sse.ExecuteScript("window.location.reload()")
+		})
+		<-r.Context().Done()
+	})
+
+	router.Handle("/static/*", hashfs.FileServer(ui.StaticSys))
+
 	natsPort, err := getFreeNatsPort()
 	if err != nil {
 		return fmt.Errorf("error obtaining NATS port: %w", err)

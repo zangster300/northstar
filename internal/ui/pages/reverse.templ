@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"github.com/zangster300/northstar/internal/ui"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
@@ -20,6 +21,6 @@ templ ReversePage() {
 				<reverse-component data-on-reverse="$_reversed = evt.detail.value" data-attr-name="$_name"></reverse-component>
 			</div>
 		</div>
-		<script type="module" src="/static/web-components/index.js" onerror="console.debug('what the f')"></script>
+		<script type="module" src={ ui.StaticPath("libs/web-components.js") }></script>
 	}
 }

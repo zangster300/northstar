@@ -1,54 +1,22 @@
 package pages
 
 import (
+	"github.com/zangster300/northstar/internal/ui"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
 
 templ SortablePage() {
 	@layouts.Base("Sortable") {
-		<script>
-			function handleScriptErr() {
-
-
-				// <div class="alert alert-info">
-				// 	@icon("material-symbols:info")
-				// 	<p>
-				// 		<div class="text-sm">
-				// 			This mini application is driven by a
-				// 			<span class="italic font-bold uppercase text-primary">single get request!</span>
-				// 			<br/>
-				// 			As you interact with the UI, the backend state is updated and new partial HTML fragments are sent down to the client via Server-Sent Events.  You can make simple apps or full blown SPA replacements with this pattern.  Open your dev tools and watch the network tab to see the magic happen (you will want to look for the "/todos" Network/EventStream tab).
-				// 		</div>
-				// 	</p>
-				// </div>
-
-				const container = document.createElement('div')
-				container.classList.add("alert", "alert-warning")
-
-				const iconify = document.createElement('iconify-icon')
-				iconify.setAttribute('icon', 'material-symbols:warning')
-				container.appendChild(iconify)
-
-				const messageContainer = document.createElement('div')
-
-				const para1 = document.createElement('span')
-				const para2 = document.createElement('span')
-				para1.innerText = "To enable this example, you will need to tap into the npm ecosystem"
-				para2.innerHTML = `If this interests you, check out this <a class="link" href="https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md">README</a> to learn more`
-
-				messageContainer.classList.add("flex", "flex-col", "gap-2", "items-center", "justify-center")
-
-				messageContainer.appendChild(para1)
-				messageContainer.appendChild(para2)
-
-				container.appendChild(messageContainer)
-
-				document.querySelector("article").appendChild(container)
-			}
-		</script>
 		@components.Navigation(components.PageSortable)
-		<article class="prose mx-auto m-2">
+		<article class="prose mx-auto pt-2 flex flex-col gap-2">
+			<div class="alert alert-warning text-center">
+				@components.Icon("material-symbols:warning")
+				<div class="flex flex-col gap-2">
+					<span>This example uses <a class="link" href="https://lit.dev/">lit</a> and <a class="link" href="https://github.com/SortableJS/Sortable">SortableJS</a>, you will need to download both libraries before this example will work</span>
+					<span>Check out this <a class="link" href="https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md">README</a> to learn more</span>
+				</div>
+			</div>
 			<sortable-example
 				class="flex flex-col gap-8"
 				data-signals="{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}"
@@ -57,7 +25,7 @@ templ SortablePage() {
 				data-attr-items="JSON.stringify($items)"
 				data-on-change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
 			></sortable-example>
-			<script type="module" src="/static/lit.js" onerror="handleScriptErr()"></script>
+			<script type="module" src={ ui.StaticPath("libs/lit-components.js") }></script>
 		</article>
 	}
 }

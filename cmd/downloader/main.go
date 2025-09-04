@@ -107,11 +107,11 @@ func download(files map[string]string) error {
 	for url, filename := range files {
 		wg.Go(func() {
 			base := filepath.Base(filename)
-			slog.Info("Downloading...", "file", base, "url", url)
+			slog.Info("downloading...", "file", base, "url", url)
 			if err := downloadFile(url, filename); err != nil {
 				errCh <- fmt.Errorf("failed to download [%s]: %w", base, err)
 			} else {
-				slog.Info("Finished", "file", base)
+				slog.Info("finished", "file", base)
 			}
 		})
 	}

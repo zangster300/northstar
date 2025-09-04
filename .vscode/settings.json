@@ -2,9 +2,6 @@
   "emmet.includeLanguages": {
     "templ": "html"
   },
-  "gopls": {
-    "build.buildFlags": ["-tags=dev"]
-  },
   "go.useLanguageServer": true,
   "tailwindCSS.includeLanguages": {
     "templ": "html"

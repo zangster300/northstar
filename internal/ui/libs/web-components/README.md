@@ -1,6 +1,6 @@
 # Web Components
 
-This directory holds an example library setup for building web components driven by `Datastar`
+This directory holds an example library setup for building web components driven by Datastar
 
 # Setup
 
@@ -10,11 +10,8 @@ This directory holds an example library setup for building web components driven
 go mod tidy
 ```
 
-2. Build a bundle of the web components
+2. [Build](../../../../cmd/web/build/main.go#L28)
 
 ```shell
-go run build.go
+go run cmd/web/build/main.go
 ```
-
-> [!IMPORTANT]
-> The bundle will be generated in the [static/web-components](../../static/web-components/) directory

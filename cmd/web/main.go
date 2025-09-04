@@ -62,9 +62,19 @@ func run(ctx context.Context) error {
 
 	eg, egctx := errgroup.WithContext(ctx)
 
+	router := chi.NewMux()
+	router.Use(
+		middleware.Logger,
+		middleware.Recoverer,
+	)
+
+	if err := routes.SetupRoutes(egctx, router); err != nil {
+		return fmt.Errorf("error setting up routes: %w", err)
+	}
+
 	srv := &http.Server{
 		Addr:    addr,
-		Handler: setupRouter(egctx),
+		Handler: router,
 		BaseContext: func(l net.Listener) context.Context {
 			return egctx
 		},
@@ -98,17 +108,4 @@ func run(ctx context.Context) error {
 	})
 
 	return eg.Wait()
-}
-
-func setupRouter(ctx context.Context) http.Handler {
-	router := chi.NewMux()
-	router.Use(
-		middleware.Logger,
-		middleware.Recoverer,
-	)
-	router.Handle("/static/*", static())
-	if err := routes.SetupRoutes(ctx, router); err != nil {
-		panic(fmt.Errorf("error setting up routes: %w", err))
-	}
-	return router
 }

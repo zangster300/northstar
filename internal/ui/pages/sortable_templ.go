@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/zangster300/northstar/internal/ui"
 	"github.com/zangster300/northstar/internal/ui/components"
 	"github.com/zangster300/northstar/internal/ui/layouts"
 )
@@ -46,15 +47,32 @@ func SortablePage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\t\tfunction handleScriptErr() {\n\n\n\t\t\t\t// <div class=\"alert alert-info\">\n\t\t\t\t// \t@icon(\"material-symbols:info\")\n\t\t\t\t// \t<p>\n\t\t\t\t// \t\t<div class=\"text-sm\">\n\t\t\t\t// \t\t\tThis mini application is driven by a\n\t\t\t\t// \t\t\t<span class=\"italic font-bold uppercase text-primary\">single get request!</span>\n\t\t\t\t// \t\t\t<br/>\n\t\t\t\t// \t\t\tAs you interact with the UI, the backend state is updated and new partial HTML fragments are sent down to the client via Server-Sent Events.  You can make simple apps or full blown SPA replacements with this pattern.  Open your dev tools and watch the network tab to see the magic happen (you will want to look for the \"/todos\" Network/EventStream tab).\n\t\t\t\t// \t\t</div>\n\t\t\t\t// \t</p>\n\t\t\t\t// </div>\n\n\t\t\t\tconst container = document.createElement('div')\n\t\t\t\tcontainer.classList.add(\"alert\", \"alert-warning\")\n\n\t\t\t\tconst iconify = document.createElement('iconify-icon')\n\t\t\t\ticonify.setAttribute('icon', 'material-symbols:warning')\n\t\t\t\tcontainer.appendChild(iconify)\n\n\t\t\t\tconst messageContainer = document.createElement('div')\n\n\t\t\t\tconst para1 = document.createElement('span')\n\t\t\t\tconst para2 = document.createElement('span')\n\t\t\t\tpara1.innerText = \"To enable this example, you will need to tap into the npm ecosystem\"\n\t\t\t\tpara2.innerHTML = `If this interests you, check out this <a class=\"link\" href=\"https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md\">README</a> to learn more`\n\n\t\t\t\tmessageContainer.classList.add(\"flex\", \"flex-col\", \"gap-2\", \"items-center\", \"justify-center\")\n\n\t\t\t\tmessageContainer.appendChild(para1)\n\t\t\t\tmessageContainer.appendChild(para2)\n\n\t\t\t\tcontainer.appendChild(messageContainer)\n\n\t\t\t\tdocument.querySelector(\"article\").appendChild(container)\n\t\t\t}\n\t\t</script> ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
 			templ_7745c5c3_Err = components.Navigation(components.PageSortable).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <article class=\"prose mx-auto m-2\"><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"/static/lit.js\" onerror=\"handleScriptErr()\"></script></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <article class=\"prose mx-auto pt-2 flex flex-col gap-2\"><div class=\"alert alert-warning text-center\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.Icon("material-symbols:warning").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(ui.StaticPath("libs/lit-components.js"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/sortable.templ`, Line: 28, Col: 70}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"></script></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

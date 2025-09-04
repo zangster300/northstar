@@ -1,5 +1,7 @@
 package layouts
 
+import "github.com/zangster300/northstar/internal/ui"
+
 templ Base(title string) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -10,11 +12,12 @@ templ Base(title string) {
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:wght@100..900&family=Gideon+Roman:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"/>
 			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-			<link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico"/>
-			<script defer type="module" src="/static/datastar/datastar.js"></script>
-			<link href="/static/index.css" rel="stylesheet" type="text/css"/>
+			<link rel="icon" type="image/x-icon" href={ ui.StaticPath("assets/favicon.ico") }/>
+			<script defer type="module" src={ ui.StaticPath("datastar/datastar.js") }></script>
+			<link href={ ui.StaticPath("index.css") } rel="stylesheet" type="text/css"/>
 		</head>
 		<body class="flex flex-col h-screen">
+			<div data-on-load="@get('/reload', {retryMaxCount: 1000, retryInterval:20, retryMaxWaitMs:200})"></div>
 			{ children... }
 		</body>
 	</html>
