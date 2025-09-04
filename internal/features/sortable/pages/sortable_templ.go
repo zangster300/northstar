@@ -9,12 +9,12 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/zangster300/northstar/internal/features/common/components"
+	"github.com/zangster300/northstar/internal/features/common/layouts"
 	"github.com/zangster300/northstar/internal/ui"
-	"github.com/zangster300/northstar/internal/ui/components"
-	"github.com/zangster300/northstar/internal/ui/layouts"
 )
 
-func ReversePage() templ.Component {
+func SortablePage() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -47,30 +47,38 @@ func ReversePage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.Navigation(components.PageReverse).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Navigation(components.PageSortable).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"h-screen flex justify-center items-center\"><div class=\"border border-primary rounded flex flex-col gap-2 p-8 w-80\"><label class=\"input\"><span class=\"label\">Reverse</span> <input type=\"text\" data-bind-_name=\"\"></label><p class=\"truncate\" data-signals-_reversed=\"\" data-text=\"$_reversed\"></p><reverse-component data-on-reverse=\"$_reversed = evt.detail.value\" data-attr-name=\"$_name\"></reverse-component></div></div><script type=\"module\" src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <article class=\"prose mx-auto pt-2 flex flex-col gap-2\"><div class=\"alert alert-warning text-center\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.Icon("material-symbols:warning").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(ui.StaticPath("libs/web-components.js"))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(ui.StaticPath("libs/lit-components.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/reverse.templ`, Line: 24, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/features/sortable/pages/sortable.templ`, Line: 28, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"></script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"></script></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layouts.Base("Reverse Web Component").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layouts.Base("Sortable").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

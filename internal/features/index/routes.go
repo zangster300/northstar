@@ -1,4 +1,4 @@
-package routes
+package index
 
 import (
 	"context"
@@ -16,11 +16,11 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
-	"github.com/zangster300/northstar/internal/ui/components"
-	"github.com/zangster300/northstar/internal/ui/pages"
+	"github.com/zangster300/northstar/internal/features/common/components"
+	"github.com/zangster300/northstar/internal/features/index/pages"
 )
 
-func setupIndexRoute(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
+func SetupRoutes(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
 	nc, err := ns.Client()
 	if err != nil {
 		return fmt.Errorf("error creating nats client: %w", err)

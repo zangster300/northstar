@@ -1,4 +1,4 @@
-package routes
+package monitor
 
 import (
 	"fmt"
@@ -11,13 +11,13 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/ui/pages"
+	"github.com/zangster300/northstar/internal/features/monitor/pages"
 
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/mem"
 )
 
-func setupMonitorRoute(router chi.Router) error {
+func SetupRoutes(router chi.Router) error {
 	router.Get("/monitor", func(w http.ResponseWriter, r *http.Request) {
 		if err := pages.MonitorPage().Render(r.Context(), w); err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

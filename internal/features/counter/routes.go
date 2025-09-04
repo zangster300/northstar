@@ -1,4 +1,4 @@
-package routes
+package counter
 
 import (
 	"net/http"
@@ -8,10 +8,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/ui/pages"
+	"github.com/zangster300/northstar/internal/features/counter/pages"
 )
 
-func setupCounterRoute(router chi.Router, sessionStore sessions.Store) error {
+func SetupRoutes(router chi.Router, sessionStore sessions.Store) error {
 
 	router.Get("/counter", func(w http.ResponseWriter, r *http.Request) {
 		if err := pages.CounterPage().Render(r.Context(), w); err != nil {
