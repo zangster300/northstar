@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/starfederation/datastar-go/datastar"
-	"northstar/internal/features/common/components"
+	"northstar/internal/features/index/components"
 	"northstar/internal/features/index/pages"
 	"northstar/internal/features/index/services"
 )

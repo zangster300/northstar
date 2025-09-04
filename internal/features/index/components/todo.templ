@@ -3,6 +3,7 @@ package components
 import (
 	"fmt"
 	"github.com/starfederation/datastar-go/datastar"
+	common "northstar/internal/features/common/components"
 )
 
 type TodoViewMode int
@@ -51,7 +52,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 			<section class="flex flex-col gap-2">
 				<header class="flex flex-col gap-2">
 					<div class="alert alert-info">
-						@Icon("material-symbols:info")
+						@common.Icon("material-symbols:info")
 						<p>
 							<div class="text-sm">
 								This mini application is driven by a
@@ -80,14 +81,14 @@ templ TodosMVCView(mvc *TodoMVC) {
 									data-indicator="toggleAllFetching"
 									data-attrs-disabled="$toggleAllFetching"
 								>
-									@Icon("material-symbols:checklist")
+									@common.Icon("material-symbols:checklist")
 								</button>
 							</div>
 						}
 						if mvc.EditingIdx <0 {
 							@TodoInput(-1)
 						}
-						@sseIndicator("toggleAllFetching")
+						@common.SseIndicator("toggleAllFetching")
 					</div>
 				</header>
 				if hasTodos {
@@ -130,7 +131,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										class="btn btn-error btn-xs join-item"
 										data-on-click={ datastar.DeleteSSE("/api/todos/-1") }
 									>
-										@Icon("material-symbols:delete")
+										@common.Icon("material-symbols:delete")
 									</button>
 								</div>
 							}
@@ -139,7 +140,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									class="btn btn-warning btn-xs join-item"
 									data-on-click={ datastar.PutSSE("/api/todos/reset") }
 								>
-									@Icon("material-symbols:delete-sweep")
+									@common.Icon("material-symbols:delete-sweep")
 								</button>
 							</div>
 						</div>
@@ -190,9 +191,9 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-indicator={ fetchingSignalName }
 			>
 				if todo.Completed {
-					@Icon("material-symbols:check-box-outline")
+					@common.Icon("material-symbols:check-box-outline")
 				} else {
-					@Icon("material-symbols:check-box-outline-blank")
+					@common.Icon("material-symbols:check-box-outline-blank")
 				}
 			</label>
 			<label
@@ -203,7 +204,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			>
 				{ todo.Text }
 			</label>
-			@sseIndicator(fetchingSignalName)
+			@common.SseIndicator(fetchingSignalName)
 			<button
 				id={ fmt.Sprintf("delete%d", i) }
 				class="invisible btn btn-error group-hover:visible"
@@ -212,7 +213,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-indicator={ fetchingSignalName }
 				data-attrs-disabled={ fetchingSignalName + "" }
 			>
-				@Icon("material-symbols:close")
+				@common.Icon("material-symbols:close")
 			</button>
 		</li>
 	}

@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
-	"northstar/internal/features/common/components"
+	"northstar/internal/features/index/components"
 )
 
 type TodoService struct {
