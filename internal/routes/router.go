@@ -19,12 +19,12 @@ import (
 	"github.com/gorilla/sessions"
 	natsserver "github.com/nats-io/nats-server/v2/server"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/ui"
 	counterFeature "github.com/zangster300/northstar/internal/features/counter"
 	indexFeature "github.com/zangster300/northstar/internal/features/index"
 	monitorFeature "github.com/zangster300/northstar/internal/features/monitor"
 	reverseFeature "github.com/zangster300/northstar/internal/features/reverse"
 	sortableFeature "github.com/zangster300/northstar/internal/features/sortable"
+	"github.com/zangster300/northstar/internal/ui"
 )
 
 func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
