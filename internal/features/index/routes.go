@@ -4,7 +4,7 @@ import (
 	"github.com/delaneyj/toolbelt/embeddednats"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	"github.com/zangster300/northstar/internal/features/index/services"
+	"northstar/internal/features/index/services"
 )
 
 func SetupRoutes(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {

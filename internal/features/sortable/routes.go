@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/zangster300/northstar/internal/features/sortable/pages"
+	"northstar/internal/features/sortable/pages"
 )
 
 func SetupRoutes(router chi.Router) error {

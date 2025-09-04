@@ -14,8 +14,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
-	"github.com/zangster300/northstar/internal/routes"
 	"golang.org/x/sync/errgroup"
+	"northstar/internal/routes"
 )
 
 func main() {

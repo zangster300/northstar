@@ -10,7 +10,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/features/monitor/pages"
+	"northstar/internal/features/monitor/pages"
 
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/mem"

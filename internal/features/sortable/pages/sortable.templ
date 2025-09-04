@@ -1,9 +1,9 @@
 package pages
 
 import (
-	"github.com/zangster300/northstar/internal/ui"
-	"github.com/zangster300/northstar/internal/features/common/components"
-	"github.com/zangster300/northstar/internal/features/common/layouts"
+	"northstar/internal/ui"
+	"northstar/internal/features/common/components"
+	"northstar/internal/features/common/layouts"
 )
 
 templ SortablePage() {
@@ -14,7 +14,7 @@ templ SortablePage() {
 				@components.Icon("material-symbols:warning")
 				<div class="flex flex-col gap-2">
 					<span>This example uses <a class="link" href="https://lit.dev/">lit</a> and <a class="link" href="https://github.com/SortableJS/Sortable">SortableJS</a>, you will need to download both libraries before this example will work</span>
-					<span>Check out this <a class="link" href="https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md">README</a> to learn more</span>
+					<span>Check out this <a class="link" href="internal/ui/libs/lit/README.md">README</a> to learn more</span>
 				</div>
 			</div>
 			<sortable-example

@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/features/common/components"
-	"github.com/zangster300/northstar/internal/features/index/pages"
-	"github.com/zangster300/northstar/internal/features/index/services"
+	"northstar/internal/features/common/components"
+	"northstar/internal/features/index/pages"
+	"northstar/internal/features/index/services"
 )
 
 type Handlers struct {

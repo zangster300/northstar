@@ -9,9 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/zangster300/northstar/internal/features/common/components"
-	"github.com/zangster300/northstar/internal/features/common/layouts"
-	"github.com/zangster300/northstar/internal/ui"
+	"northstar/internal/features/common/components"
+	"northstar/internal/features/common/layouts"
+	"northstar/internal/ui"
 )
 
 func SortablePage() templ.Component {
@@ -59,7 +59,7 @@ func SortablePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"https://github.com/zangster300/northstar/blob/main/internal/ui/libs/lit/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"internal/ui/libs/lit/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

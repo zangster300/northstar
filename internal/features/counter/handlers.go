@@ -7,7 +7,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/gorilla/sessions"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/zangster300/northstar/internal/features/counter/pages"
+	"northstar/internal/features/counter/pages"
 )
 
 const (

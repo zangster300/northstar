@@ -1,4 +1,4 @@
-module github.com/zangster300/northstar
+module northstar
 
 go 1.25
 
