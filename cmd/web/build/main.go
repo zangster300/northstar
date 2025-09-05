@@ -4,12 +4,11 @@ import (
 	"errors"
 	"flag"
 	"log/slog"
+	"northstar/web/resources"
 	"os"
 
 	"github.com/evanw/esbuild/pkg/api"
 )
-
-const staticDirectory = "internal/ui/static"
 
 func main() {
 	watch := flag.Bool("watch", false, "Enable watcher mode")
@@ -25,15 +24,17 @@ func run(watch bool) error {
 	opts := api.BuildOptions{
 		EntryPointsAdvanced: []api.EntryPoint{
 			{
-				InputPath:  "internal/features/reverse/web-components/reverse-component.ts",
-				OutputPath: "web-components/reverse-component",
+				InputPath:  resources.LibsDirectoryPath + "/web-components/reverse-component/index.ts",
+				OutputPath: "libs/reverse-component",
 			},
+			// uncomment after running pnpm install in the web/libs/lit directory
+			// esbuild will only be able to find the lit + sortable libraries after doing so
 			// {
-			// 	InputPath:  "internal/features/sortable/web-components/sortable-example.ts",
-			// 	OutputPath: "web-components/sortable-example",
+			// 	InputPath:  resources.LibsDirectoryPath + "/lit/src/index.ts",
+			// 	OutputPath: "libs/sortable-example",
 			// },
 		},
-		Outdir:            staticDirectory,
+		Outdir:            resources.StaticDirectoryPath,
 		Bundle:            true,
 		Write:             true,
 		LogLevel:          api.LogLevelInfo,
@@ -43,7 +44,6 @@ func run(watch bool) error {
 		Format:            api.FormatESModule,
 		Sourcemap:         api.SourceMapLinked,
 		Target:            api.ESNext,
-		NodePaths:         []string{"node_modules"},
 	}
 
 	if watch {

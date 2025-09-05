@@ -2,7 +2,7 @@ version: "3"
 
 env:
   NATS_PORT: 4222
-  STATIC_DIR: "internal/ui/static"
+  STATIC_DIR: "web/resources/static"
 
 tasks:
   # The `build:` tasks below are used together for production builds of a project
@@ -16,13 +16,13 @@ tasks:
 
   build:styles:
     cmds:
-      - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css
+      - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css
     sources:
-      - "./internal/**/*.html"
-      - "./internal/**/*.ts"
-      - "./internal/**/*.templ"
-      - "./internal/**/*.go"
-      - "./internal/**/*.css"
+      - "./web/resources/**/*.html"
+      - "./web/resources/**/*.ts"
+      - "./web/resources/**/*.templ"
+      - "./web/resources/**/*.go"
+      - "./web/resources/**/*.css"
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
@@ -30,11 +30,11 @@ tasks:
     cmds:
       - go run cmd/web/build/main.go
     sources:
-      - "./internal/**/**/*.html"
-      - "./internal/**/**/*.css"
-      - "./internal/**/**/*.ts"
+      - "./web/libs/**/**/*.html"
+      - "./web/libs/**/**/*.css"
+      - "./web/libs/**/**/*.ts"
     generates:
-      - "{{.STATIC_DIR}}/web-components/**"
+      - "{{.STATIC_DIR}}/libs/**"
 
   build:
     cmds:
@@ -56,7 +56,6 @@ tasks:
     cmds:
       - go run cmd/downloader/main.go
 
-
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:
     cmds:
@@ -64,8 +63,8 @@ tasks:
 
   live:styles:
     cmds:
-      - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css -w
-  
+      - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css -w
+
   live:wc:
     cmds:
       - go run cmd/web/build/main.go -watch
@@ -76,7 +75,7 @@ tasks:
         go tool air  \
          -build.cmd "go build -o tmp/bin/main ./cmd/web" \
          -build.bin "tmp/bin/main" \
-         -build.exclude_dir "data,node_modules" \
+         -build.exclude_dir "data,node_modules,web/resources/libs/datastar/node_modules,web/resources/libs/lit/node_modules" \
          -build.include_ext "go,templ,js,css" \
          -misc.clean_on_exit "true"
 

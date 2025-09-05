@@ -28,7 +28,7 @@ go mod tidy
 
 Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air)
 
-Use the [live task](./Taskfile.yml#L83) from the [Taskfile](https://taskfile.dev/) to start with live reload setup
+Use the [live task](./Taskfile.yml#L82) from the [Taskfile](https://taskfile.dev/) to start with live reload setup
 
 ```shell
 go tool task live
@@ -98,7 +98,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/router.go#L43) file
+An embedded NATS server that powers the `TODO` application is configured and booted up [router.go](./internal/router.go#L49)
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 
@@ -123,20 +123,9 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 
 ## Web Components x Datastar
 
-Web components are organized by feature in the `internal/features/*/web-components/` directories:
+[🔗 Vanilla Web Components Setup](./web/libs/web-components/README.md)
 
-- **[Reverse Component](./internal/features/reverse/web-components/)** - Vanilla web component for text reversal
-- **[Sortable Component](./internal/features/sortable/web-components/)** - Lit component with SortableJS integration
-
-### Building Web Components
-
-```shell
-go tool task build
-```
-
-This compiles the TypeScript components using esbuild and outputs them to `internal/ui/static/web-components/`.
-
-See the individual component READMEs for detailed setup instructions and usage examples.
+[🔗 Lit Web Components Setup](./web/libs/lit/README.md)
 
 ## Client
 

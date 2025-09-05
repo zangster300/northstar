@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"northstar/internal/features/common/components"
 	"northstar/internal/features/common/layouts"
-	"northstar/internal/ui"
+	"northstar/web/resources"
 )
 
 func SortablePage() templ.Component {
@@ -59,14 +59,14 @@ func SortablePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"internal/features/sortable/web-components/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-2\"><span>This example uses <a class=\"link\" href=\"https://lit.dev/\">lit</a> and <a class=\"link\" href=\"https://github.com/SortableJS/Sortable\">SortableJS</a>, you will need to download both libraries before this example will work</span> <span>Check out this <a class=\"link\" href=\"https://github.com/zangster300/northstar/blob/main/web/libs/lit/README.md\">README</a> to learn more</span></div></div><sortable-example class=\"flex flex-col gap-8\" data-signals=\"{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}\" data-attr-title=\"$title\" data-attr-value=\"$info\" data-attr-items=\"JSON.stringify($items)\" data-on-change=\"event.detail && console.log(`Send this data somewhere else! ${event.detail}`)\"></sortable-example><script type=\"module\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(ui.StaticPath("web-components/sortable-example.js"))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(resources.StaticPath("libs/sortable-example.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/features/sortable/pages/sortable.templ`, Line: 28, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/features/sortable/pages/sortable.templ`, Line: 28, Col: 79}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {

@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"northstar/web/resources"
 	"os"
 	"path/filepath"
 	"sync"
@@ -20,15 +21,15 @@ func main() {
 
 func run() error {
 	files := map[string]string{
-		"https://raw.githubusercontent.com/starfederation/datastar/develop/bundles/datastar.js":     "internal/ui/static/datastar/datastar.js",
-		"https://raw.githubusercontent.com/starfederation/datastar/develop/bundles/datastar.js.map": "internal/ui/static/datastar/datastar.js.map",
-		"https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.js":                   "internal/ui/styles/daisyui/daisyui.js",
-		"https://github.com/saadeghi/daisyui/releases/latest/download/daisyui-theme.js":             "internal/ui/styles/daisyui/daisyui-theme.js",
+		"https://raw.githubusercontent.com/starfederation/datastar/develop/bundles/datastar.js":     resources.StaticDirectoryPath + "/datastar/datastar.js",
+		"https://raw.githubusercontent.com/starfederation/datastar/develop/bundles/datastar.js.map": resources.StaticDirectoryPath + "/datastar/datastar.js.map",
+		"https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.js":                   resources.StylesDirectoryPath + "/daisyui/daisyui.js",
+		"https://github.com/saadeghi/daisyui/releases/latest/download/daisyui-theme.js":             resources.StylesDirectoryPath + "/daisyui/daisyui-theme.js",
 	}
 
 	directories := []string{
-		"internal/ui/static/datastar",
-		"internal/ui/styles/daisyui",
+		resources.StaticDirectoryPath + "/datastar",
+		resources.StylesDirectoryPath + "/daisyui",
 	}
 
 	if err := removeDirectories(directories); err != nil {

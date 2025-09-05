@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../features/reverse/web-components/reverse-component.ts"],
-  "sourcesContent": ["class ReverseComponent extends HTMLElement {\n  static get observedAttributes() {\n    return [\"name\"];\n  }\n\n  attributeChangedCallback(name: string, oldValue: string, newValue: string) {\n    const len = newValue.length;\n\n    let value: string | any[] = Array(len);\n\n    let i = len - 1;\n\n    for (const char of newValue) {\n      value[i--] = char.codePointAt(0);\n    }\n\n    value = String.fromCodePoint(...value);\n    this.dispatchEvent(new CustomEvent(\"reverse\", { detail: { value } }));\n  }\n}\n\ncustomElements.define(\"reverse-component\", ReverseComponent);\n"],
-  "mappings": "AAAA,IAAMA,EAAN,cAA+B,WAAY,CACzC,WAAW,oBAAqB,CAC9B,MAAO,CAAC,MAAM,CAChB,CAEA,yBAAyBC,EAAcC,EAAkBC,EAAkB,CACzE,IAAMC,EAAMD,EAAS,OAEjBE,EAAwB,MAAMD,CAAG,EAEjCE,EAAIF,EAAM,EAEd,QAAWG,KAAQJ,EACjBE,EAAMC,GAAG,EAAIC,EAAK,YAAY,CAAC,EAGjCF,EAAQ,OAAO,cAAc,GAAGA,CAAK,EACrC,KAAK,cAAc,IAAI,YAAY,UAAW,CAAE,OAAQ,CAAE,MAAAA,CAAM,CAAE,CAAC,CAAC,CACtE,CACF,EAEA,eAAe,OAAO,oBAAqBL,CAAgB",
-  "names": ["ReverseComponent", "name", "oldValue", "newValue", "len", "value", "i", "char"]
-}

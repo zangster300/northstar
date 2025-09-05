@@ -17,7 +17,7 @@ import (
 	monitorFeature "northstar/internal/features/monitor"
 	reverseFeature "northstar/internal/features/reverse"
 	sortableFeature "northstar/internal/features/sortable"
-	"northstar/internal/ui"
+	"northstar/web/resources"
 
 	"github.com/benbjohnson/hashfs"
 	"github.com/delaneyj/toolbelt"
@@ -39,7 +39,7 @@ func SetupRoutes(ctx context.Context, router chi.Router) (err error) {
 		<-r.Context().Done()
 	})
 
-	router.Handle("/static/*", hashfs.FileServer(ui.StaticSys))
+	router.Handle("/static/*", hashfs.FileServer(resources.StaticSys))
 
 	natsPort, err := getFreeNatsPort()
 	if err != nil {
