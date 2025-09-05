@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "experimentalDecorators": true,
+    "isolatedModules": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2022.Object"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "useDefineForClassFields": false
+  },
+  "include": ["internal/features/**/web-components/**/*.ts"]
+}

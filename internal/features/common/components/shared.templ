@@ -1,0 +1,22 @@
+package components
+
+import "fmt"
+
+func KVPairsAttrs(kvPairs ...string) templ.Attributes {
+	if len(kvPairs)%2 != 0 {
+		panic("kvPairs must be a multiple of 2")
+	}
+	attrs := templ.Attributes{}
+	for i := 0; i < len(kvPairs); i += 2 {
+		attrs[kvPairs[i]] = kvPairs[i+1]
+	}
+	return attrs
+}
+
+templ Icon(icon string, attrs ...string) {
+	<iconify-icon icon={ icon } { KVPairsAttrs(attrs...)... } noobserver></iconify-icon>
+}
+
+templ SseIndicator(signalName string) {
+	<div class="loading-dots text-primary" data-class={ fmt.Sprintf("{'loading ml-4': $%s}", signalName) }></div>
+}

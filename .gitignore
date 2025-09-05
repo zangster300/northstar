@@ -7,7 +7,7 @@ data
 internal/ui/static/*
 !internal/ui/static/assets
 !internal/ui/static/js
-!internal/ui/static/libs
+!internal/ui/static/web-components
 
 # ------------------------------------------------------------------
 # Go
