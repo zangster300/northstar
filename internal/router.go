@@ -1,4 +1,4 @@
-package routes
+package internal
 
 import (
 	"context"
@@ -12,6 +12,13 @@ import (
 	"sync"
 	"time"
 
+	counterFeature "northstar/internal/features/counter"
+	indexFeature "northstar/internal/features/index"
+	monitorFeature "northstar/internal/features/monitor"
+	reverseFeature "northstar/internal/features/reverse"
+	sortableFeature "northstar/internal/features/sortable"
+	"northstar/internal/ui"
+
 	"github.com/benbjohnson/hashfs"
 	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/embeddednats"
@@ -19,12 +26,6 @@ import (
 	"github.com/gorilla/sessions"
 	natsserver "github.com/nats-io/nats-server/v2/server"
 	"github.com/starfederation/datastar-go/datastar"
-	counterFeature "northstar/internal/features/counter"
-	indexFeature "northstar/internal/features/index"
-	monitorFeature "northstar/internal/features/monitor"
-	reverseFeature "northstar/internal/features/reverse"
-	sortableFeature "northstar/internal/features/sortable"
-	"northstar/internal/ui"
 )
 
 func SetupRoutes(ctx context.Context, router chi.Router) (err error) {

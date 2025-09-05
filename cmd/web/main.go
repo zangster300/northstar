@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	internal "northstar/internal"
 	"os"
 	"os/signal"
 	"syscall"
@@ -15,7 +16,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 	"golang.org/x/sync/errgroup"
-	"northstar/internal/routes"
 )
 
 func main() {
@@ -71,7 +71,7 @@ func run(ctx context.Context) error {
 		middleware.Recoverer,
 	)
 
-	if err := routes.SetupRoutes(egctx, router); err != nil {
+	if err := internal.SetupRoutes(egctx, router); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 

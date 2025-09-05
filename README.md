@@ -98,7 +98,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/routes/router.go#L43) file
+An embedded NATS server that powers the `TODO` application is configured and booted up in the [router.go](./internal/router.go#L43) file
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 
