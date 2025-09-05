@@ -1,1 +1,0 @@
-export { SortableExample } from './components/sortable-example/sortable-example'

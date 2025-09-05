@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	internal "northstar/internal"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,13 +15,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
-	"github.com/zangster300/northstar/internal/routes"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
 	godotenv.Load()
-	
+
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
@@ -71,7 +71,7 @@ func run(ctx context.Context) error {
 		middleware.Recoverer,
 	)
 
-	if err := routes.SetupRoutes(egctx, router); err != nil {
+	if err := internal.SetupRoutes(egctx, router); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 

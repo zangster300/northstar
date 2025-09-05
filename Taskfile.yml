@@ -18,11 +18,11 @@ tasks:
     cmds:
       - go tool gotailwind -i internal/ui/styles/styles.css -o $STATIC_DIR/index.css
     sources:
-      - "./internal/ui/**/*.html"
-      - "./internal/ui/**/*.ts"
-      - "./internal/ui/**/*.templ"
-      - "./internal/ui/**/*.go"
-      - "./internal/ui/**/*.css"
+      - "./internal/**/*.html"
+      - "./internal/**/*.ts"
+      - "./internal/**/*.templ"
+      - "./internal/**/*.go"
+      - "./internal/**/*.css"
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
@@ -30,11 +30,11 @@ tasks:
     cmds:
       - go run cmd/web/build/main.go
     sources:
-      - "./internal/ui/libs/**/**/*.html"
-      - "./internal/ui/libs/**/**/*.css"
-      - "./internal/ui/libs/**/**/*.ts"
+      - "./internal/**/**/*.html"
+      - "./internal/**/**/*.css"
+      - "./internal/**/**/*.ts"
     generates:
-      - "{{.STATIC_DIR}}/libs/**"
+      - "{{.STATIC_DIR}}/web-components/**"
 
   build:
     cmds:
@@ -76,7 +76,7 @@ tasks:
         go tool air  \
          -build.cmd "go build -o tmp/bin/main ./cmd/web" \
          -build.bin "tmp/bin/main" \
-         -build.exclude_dir "data,node_modules,internal/ui/libs/datastar/node_modules,internal/ui/libs/lit/node_modules" \
+         -build.exclude_dir "data,node_modules" \
          -build.include_ext "go,templ,js,css" \
          -misc.clean_on_exit "true"
 

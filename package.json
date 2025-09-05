@@ -1,0 +1,17 @@
+{
+  "name": "northstar",
+  "private": false,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "lit": "^3.3.1",
+    "sortablejs": "^1.15.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.14",
+    "@types/sortablejs": "^1.15.8",
+    "typescript": "^5.8.3"
+  }
+}
