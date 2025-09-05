@@ -15,6 +15,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/evanw/esbuild v0.25.9
 	github.com/gorilla/sessions v1.4.0
+	github.com/joho/godotenv v1.5.1
 	github.com/nats-io/nats-server/v2 v2.11.8
 	github.com/nats-io/nats.go v1.45.0
 	github.com/samber/lo v1.51.0
@@ -79,7 +80,6 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
