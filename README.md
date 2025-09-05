@@ -123,9 +123,20 @@ nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"ed
 
 ## Web Components x Datastar
 
-[🔗 Vanilla Web Components Setup](./internal/ui/libs/web-components/README.md)
+Web components are organized by feature in the `internal/features/*/web-components/` directories:
 
-[🔗 Lit Web Components Setup](./internal/ui/libs/lit/README.md)
+- **[Reverse Component](./internal/features/reverse/web-components/)** - Vanilla web component for text reversal
+- **[Sortable Component](./internal/features/sortable/web-components/)** - Lit component with SortableJS integration
+
+### Building Web Components
+
+```shell
+go tool task build
+```
+
+This compiles the TypeScript components using esbuild and outputs them to `internal/ui/static/libs/`.
+
+See the individual component READMEs for detailed setup instructions and usage examples.
 
 ## Client
 

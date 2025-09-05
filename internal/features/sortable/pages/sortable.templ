@@ -14,7 +14,7 @@ templ SortablePage() {
 				@components.Icon("material-symbols:warning")
 				<div class="flex flex-col gap-2">
 					<span>This example uses <a class="link" href="https://lit.dev/">lit</a> and <a class="link" href="https://github.com/SortableJS/Sortable">SortableJS</a>, you will need to download both libraries before this example will work</span>
-					<span>Check out this <a class="link" href="internal/ui/libs/lit/README.md">README</a> to learn more</span>
+					<span>Check out this <a class="link" href="internal/features/sortable/web-components/README.md">README</a> to learn more</span>
 				</div>
 			</div>
 			<sortable-example
@@ -25,7 +25,7 @@ templ SortablePage() {
 				data-attr-items="JSON.stringify($items)"
 				data-on-change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
 			></sortable-example>
-			<script type="module" src={ ui.StaticPath("libs/lit-components.js") }></script>
+			<script type="module" src={ ui.StaticPath("web-components/sortable-example.js") }></script>
 		</article>
 	}
 }

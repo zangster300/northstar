@@ -25,13 +25,12 @@ func run(watch bool) error {
 	opts := api.BuildOptions{
 		EntryPointsAdvanced: []api.EntryPoint{
 			{
-				InputPath:  "internal/ui/libs/web-components/reverse-component/index.ts",
-				OutputPath: "libs/web-components",
+				InputPath:  "internal/features/reverse/web-components/reverse-component.ts",
+				OutputPath: "web-components/reverse-component",
 			},
-			// uncomment this EntryPoint once lit + SortableJS have been installed
 			// {
-			// 	InputPath:  "internal/ui/libs/lit/src/index.ts",
-			// 	OutputPath: "libs/lit-components",
+			// 	InputPath:  "internal/features/sortable/web-components/sortable-example.ts",
+			// 	OutputPath: "web-components/sortable-example",
 			// },
 		},
 		Outdir:            staticDirectory,
@@ -44,6 +43,7 @@ func run(watch bool) error {
 		Format:            api.FormatESModule,
 		Sourcemap:         api.SourceMapLinked,
 		Target:            api.ESNext,
+		NodePaths:         []string{"node_modules"},
 	}
 
 	if watch {
