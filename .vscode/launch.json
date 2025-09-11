@@ -6,6 +6,7 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/web",
+      "buildFlags": "-tags=dev",
     }
   ]
 }

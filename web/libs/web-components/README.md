@@ -1,6 +1,6 @@
 # Web Components
 
-This directory holds an example library setup for building web components driven by Datastar
+This directory holds source code for building [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements) driven by Datastar
 
 # Setup
 
@@ -10,7 +10,7 @@ This directory holds an example library setup for building web components driven
 go mod tidy
 ```
 
-2. [Build](../../../cmd/web/build/main.go#L27)
+2. [Build](../../../cmd/web/build/main.go)
 
 ```shell
 go run cmd/web/build/main.go

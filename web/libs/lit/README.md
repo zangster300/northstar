@@ -1,6 +1,6 @@
 # Lit
 
-This directory holds an example [library](https://vite.dev/guide/build.html#library-mode) setup for creating web components powered by [lit](https://lit.dev/) and driven by Datastar
+This directory holds an example library setup for creating web components powered by [lit](https://lit.dev/) and driven by Datastar
 
 # Setup
 
@@ -10,7 +10,7 @@ This directory holds an example [library](https://vite.dev/guide/build.html#libr
 pnpm install
 ```
 
-2. [Build](../../../cmd/web/build/main.go#L30)
+2. [Build](../../../cmd/web/build/main.go#L34)
 
 ```shell
 go run cmd/web/build/main.go

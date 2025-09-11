@@ -35,7 +35,6 @@ export class SortableExample extends LitElement {
   }
 
   render() {
-    console.log(this)
     return html`
       <div class="flex flex-col gap-2 p-4 border border-primary rounded">
           <div class="text-lg">${this.title}: <span class="font-bold">${this.value}</span></div>

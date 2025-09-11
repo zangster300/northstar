@@ -3,7 +3,10 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"log/slog"
+	"net/http"
+	"northstar/config"
 	"northstar/web/resources"
 	"os"
 
@@ -27,23 +30,37 @@ func run(watch bool) error {
 				InputPath:  resources.LibsDirectoryPath + "/web-components/reverse-component/index.ts",
 				OutputPath: "libs/reverse-component",
 			},
-			// uncomment after running pnpm install in the web/libs/lit directory
-			// esbuild will only be able to find the lit + sortable libraries after doing so
+			/*
+				uncomment the entrypoint below after running pnpm install in the web/libs/lit directory
+				esbuild will only be able to find the lit + sortable libraries after doing so
+			*/
 			// {
 			// 	InputPath:  resources.LibsDirectoryPath + "/lit/src/index.ts",
 			// 	OutputPath: "libs/sortable-example",
 			// },
 		},
-		Outdir:            resources.StaticDirectoryPath,
 		Bundle:            true,
-		Write:             true,
+		Format:            api.FormatESModule,
 		LogLevel:          api.LogLevelInfo,
-		MinifyWhitespace:  true,
 		MinifyIdentifiers: true,
 		MinifySyntax:      true,
-		Format:            api.FormatESModule,
-		Sourcemap:         api.SourceMapLinked,
-		Target:            api.ESNext,
+		MinifyWhitespace:  true,
+		Outdir:            resources.StaticDirectoryPath,
+		Plugins: []api.Plugin{{
+			Name: "hotreload",
+			Setup: func(build api.PluginBuild) {
+				build.OnEnd(func(result *api.BuildResult) (api.OnEndResult, error) {
+					slog.Info("build complete", "errors", len(result.Errors), "warnings", len(result.Warnings))
+					if watch && len(result.Errors) == 0 {
+						http.Get(fmt.Sprintf("http://%s:%s/hotreload", config.Global.Host, config.Global.Port))
+					}
+					return api.OnEndResult{}, nil
+				})
+			},
+		}},
+		Sourcemap: api.SourceMapLinked,
+		Target:    api.ESNext,
+		Write:     true,
 	}
 
 	if watch {

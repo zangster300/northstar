@@ -5,9 +5,10 @@
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
 		"a-h.templ",
+		"antfu.iconify",
 		"bradlc.vscode-tailwindcss",
 		"golang.go",
-		"runem.lit-plugin"
+		"runem.lit-plugin",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

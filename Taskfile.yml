@@ -18,11 +18,7 @@ tasks:
     cmds:
       - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css
     sources:
-      - "./web/resources/**/*.html"
-      - "./web/resources/**/*.ts"
-      - "./web/resources/**/*.templ"
-      - "./web/resources/**/*.go"
-      - "./web/resources/**/*.css"
+      - "./web/resources/**/*.{html,ts,templ,go,css}"
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
@@ -30,15 +26,13 @@ tasks:
     cmds:
       - go run cmd/web/build/main.go
     sources:
-      - "./web/libs/**/**/*.html"
-      - "./web/libs/**/**/*.css"
-      - "./web/libs/**/**/*.ts"
+      - "./web/libs/**/**/*.{html,css,ts}"
     generates:
       - "{{.STATIC_DIR}}/libs/**"
 
   build:
     cmds:
-      - go build -o bin/main ./cmd/web
+      - go build -tags=prod -o bin/main ./cmd/web
     deps:
       - build:templ
       - build:styles
@@ -73,10 +67,10 @@ tasks:
     cmds:
       - |
         go tool air  \
-         -build.cmd "go build -o tmp/bin/main ./cmd/web" \
+         -build.cmd "go build -tags=dev -o tmp/bin/main ./cmd/web" \
          -build.bin "tmp/bin/main" \
          -build.exclude_dir "data,node_modules,web/resources/libs/datastar/node_modules,web/resources/libs/lit/node_modules" \
-         -build.include_ext "go,templ,js,css" \
+         -build.include_ext "go,templ" \
          -misc.clean_on_exit "true"
 
   live:

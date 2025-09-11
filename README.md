@@ -26,19 +26,19 @@ go mod tidy
 
 # Development
 
-Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air)
+Live Reload is setup out of the box - powered by [Air](https://github.com/air-verse/air) + [esbuild](cmd/web/build/main.go)
 
-Use the [live task](./Taskfile.yml#L82) from the [Taskfile](https://taskfile.dev/) to start with live reload setup
+Use the [live task](./Taskfile.yml#L76) from the [Taskfile](https://taskfile.dev/) to start with live reload setup
 
 ```shell
 go tool task live
 ```
 
-Navigate to [`http://localhost:7331`](http://localhost:7331) in your favorite web browser to begin
+Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite web browser to begin
 
 ## Debugging
 
-The [debug task](./Taskfile.yml#L48) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
+The [debug task](./Taskfile.yml#L42) will launch [delve](https://github.com/go-delve/delve) to begin a debugging session with your project's binary
 
 ```shell
 go tool task debug
@@ -55,7 +55,7 @@ go tool task debug
 - [launch.json](./.vscode/launch.json)
 - [settings.json](./.vscode/settings.json)
 
-a `Debug Main` configuration has been added to the [launch.json](./.vscode/launch.json) file to set breakpoints
+a `Debug Main` configuration has been added to the [launch.json](./.vscode/launch.json)
 
 # Starting the Server
 
@@ -69,7 +69,7 @@ Navigate to [`http://localhost:8080`](http://localhost:8080) in your favorite we
 
 ## Building an Executable
 
-The `task build` [task](./Taskfile.yml#L39) will assemble and build a binary
+The `task build` [task](./Taskfile.yml#L33) will assemble and build a binary
 
 ## Docker
 
@@ -98,7 +98,7 @@ Completely open to PR's and feature requests
 
 ### Embedded NATS
 
-An embedded NATS server that powers the `TODO` application is configured and booted up [router.go](./internal/router.go#L49)
+The NATS server that powers the `TODO` application is [embedded into the web server](./cmd/web/main.go#L60)
 
 To interface with it, you should install the [nats-cli](https://github.com/nats-io/natscli)
 
@@ -117,9 +117,6 @@ nats kv get --raw todos [key]
 # put a value into [key]
 nats kv put todos [key] '{"todos":[{"text":"Hello, NATS!","completed":true}],"editingIdx":-1,"mode":0}'
 ```
-
-> [!IMPORTANT]
-> To see these updates take place in realtime within the `TODO` example, make sure your browser is pointed to the real server and not the templ proxy server!
 
 ## Web Components x Datastar
 

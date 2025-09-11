@@ -1,6 +1,9 @@
 package layouts
 
-import "northstar/web/resources"
+import (
+	"northstar/config"
+	"northstar/web/resources"
+)
 
 templ Base(title string) {
 	<!DOCTYPE html>
@@ -17,7 +20,9 @@ templ Base(title string) {
 			<link href={ resources.StaticPath("index.css") } rel="stylesheet" type="text/css"/>
 		</head>
 		<body class="flex flex-col h-screen">
-			<div data-on-load="@get('/reload', {retryMaxCount: 1000, retryInterval:20, retryMaxWaitMs:200})"></div>
+			if config.Global.Environment == config.Dev {
+				<div data-on-load="@get('/reload', {retryMaxCount: 1000, retryInterval:20, retryMaxWaitMs:200})"></div>
+			}
 			{ children... }
 		</body>
 	</html>

@@ -6,7 +6,9 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"northstar/config"
 	internal "northstar/internal"
+	"northstar/internal/nats"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,31 +16,17 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/joho/godotenv"
+	"github.com/gorilla/sessions"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-	godotenv.Load()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: func() slog.Level {
-			switch os.Getenv("LOG_LEVEL") {
-			case "DEBUG":
-				return slog.LevelDebug
-			case "INFO":
-				return slog.LevelInfo
-			case "WARN":
-				return slog.LevelWarn
-			case "ERROR":
-				return slog.LevelError
-			default:
-				return slog.LevelInfo
-			}
-		}(),
+		Level: config.Global.LogLevel,
 	}))
 	slog.SetDefault(logger)
 
@@ -49,18 +37,9 @@ func main() {
 }
 
 func run(ctx context.Context) error {
-	getEnv := func(key, fallback string) string {
-		if val, ok := os.LookupEnv(key); ok {
-			return val
-		}
-		return fallback
-	}
 
-	host := getEnv("HOST", "0.0.0.0")
-	port := getEnv("PORT", "8080")
-
-	addr := fmt.Sprintf("%s:%s", host, port)
-	slog.Info("server started", "host", host, "port", port)
+	addr := fmt.Sprintf("%s:%s", config.Global.Host, config.Global.Port)
+	slog.Info("server started", "addr", addr)
 	defer slog.Info("server shutdown complete")
 
 	eg, egctx := errgroup.WithContext(ctx)
@@ -71,7 +50,19 @@ func run(ctx context.Context) error {
 		middleware.Recoverer,
 	)
 
-	if err := internal.SetupRoutes(egctx, router); err != nil {
+	sessionStore := sessions.NewCookieStore([]byte(config.Global.SessionSecret))
+	sessionStore.MaxAge(86400 * 30)
+	sessionStore.Options.Path = "/"
+	sessionStore.Options.HttpOnly = true
+	sessionStore.Options.Secure = false
+	sessionStore.Options.SameSite = http.SameSiteLaxMode
+
+	ns, err := nats.SetupNATS(ctx)
+	if err != nil {
+		return err
+	}
+
+	if err := internal.SetupRoutes(egctx, router, sessionStore, ns); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 

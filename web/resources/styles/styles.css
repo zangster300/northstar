@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@view-transition {
+    navigation: auto;
+}
+
 @plugin "./daisyui/daisyui.js" {
     themes: light --default, dark --prefersdark;
 }

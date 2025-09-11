@@ -1,12 +1,7 @@
 {
-  "emmet.includeLanguages": {
-    "templ": "html"
-  },
+  "[templ]": { "editor.defaultFormatter": "a-h.templ" },
+  "emmet.includeLanguages": { "templ": "html" },
   "go.useLanguageServer": true,
-  "tailwindCSS.includeLanguages": {
-    "templ": "html"
-  },
-  "[templ]": {
-    "editor.defaultFormatter": "a-h.templ"
-  }
+  "gopls": { "build.buildFlags": ["-tags=dev"] },
+  "tailwindCSS.includeLanguages": { "templ": "html" },
 }
