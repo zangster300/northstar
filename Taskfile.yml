@@ -3,6 +3,8 @@ version: "3"
 env:
   NATS_PORT: 4222
   STATIC_DIR: "web/resources/static"
+  PREFER_STATIC_BINARIES: '{{default "false" .PREFER_STATIC_BINARIES}}'
+  TAILWIND_BIN: '{{default "" .TAILWIND_BIN}}'
 
 tasks:
   # The `build:` tasks below are used together for production builds of a project
@@ -16,7 +18,14 @@ tasks:
 
   build:styles:
     cmds:
-      - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css
+      - |
+        if [ "$PREFER_STATIC_BINARIES" = "true" ] && [ -n "$TAILWIND_BIN" ]; then
+          $TAILWIND_BIN -i web/resources/styles/styles.css -o $STATIC_DIR/index.css --minify
+        elif [ "$PREFER_STATIC_BINARIES" = "true" ] && command -v tailwindcss &> /dev/null; then
+          tailwindcss -i web/resources/styles/styles.css -o $STATIC_DIR/index.css --minify
+        else
+          go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css
+        fi
     sources:
       - "./web/resources/**/*.{html,ts,templ,go,css}"
     generates:
@@ -57,7 +66,16 @@ tasks:
 
   live:styles:
     cmds:
-      - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css -w
+      - |
+        if [ "$PREFER_STATIC_BINARIES" = "true" ] && [ -n "$TAILWIND_BIN" ]; then
+          echo "✓ Using $TAILWIND_BIN (via PREFER_STATIC_BINARIES)"
+          $TAILWIND_BIN -i web/resources/styles/styles.css -o $STATIC_DIR/index.css --watch
+        elif [ "$PREFER_STATIC_BINARIES" = "true" ] && command -v tailwindcss &> /dev/null; then
+          echo "✓ Using system tailwindcss (via PREFER_STATIC_BINARIES)"
+          tailwindcss -i web/resources/styles/styles.css -o $STATIC_DIR/index.css --watch
+        else
+          go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css -w
+        fi
 
   live:wc:
     cmds:

@@ -22,6 +22,8 @@
 
 !web/**/*
 
+!flake.nix
+
 web/resources/static/libs/*
 web/resources/static/index.css
 
