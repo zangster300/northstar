@@ -7,8 +7,8 @@ import (
 	"net"
 	"net/http"
 	"northstar/config"
-	internal "northstar/internal"
-	"northstar/internal/nats"
+	"northstar/nats"
+	"northstar/router"
 	"os"
 	"os/signal"
 	"syscall"
@@ -44,8 +44,8 @@ func run(ctx context.Context) error {
 
 	eg, egctx := errgroup.WithContext(ctx)
 
-	router := chi.NewMux()
-	router.Use(
+	r := chi.NewMux()
+	r.Use(
 		middleware.Logger,
 		middleware.Recoverer,
 	)
@@ -62,13 +62,13 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	if err := internal.SetupRoutes(egctx, router, sessionStore, ns); err != nil {
+	if err := router.SetupRoutes(egctx, r, sessionStore, ns); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 
 	srv := &http.Server{
 		Addr:    addr,
-		Handler: router,
+		Handler: r,
 		BaseContext: func(l net.Listener) context.Context {
 			return egctx
 		},
