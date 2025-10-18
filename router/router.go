@@ -24,7 +24,7 @@ import (
 func SetupRoutes(ctx context.Context, router chi.Router, sessionStore *sessions.CookieStore, ns *embeddednats.Server) (err error) {
 
 	if config.Global.Environment == config.Dev {
-		setupReload(ctx, router)
+		setupReload(router)
 	}
 
 	router.Handle("/static/*", resources.Handler())
@@ -42,9 +42,10 @@ func SetupRoutes(ctx context.Context, router chi.Router, sessionStore *sessions.
 	return nil
 }
 
-func setupReload(ctx context.Context, router chi.Router) {
+func setupReload(router chi.Router) {
 	reloadChan := make(chan struct{}, 1)
 	var hotReloadOnce sync.Once
+
 	router.Get("/reload", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 		reload := func() { sse.ExecuteScript("window.location.reload()") }

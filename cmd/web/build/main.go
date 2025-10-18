@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,21 +10,41 @@ import (
 	"northstar/config"
 	"northstar/web/resources"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/evanw/esbuild/pkg/api"
+	"golang.org/x/sync/errgroup"
+)
+
+var (
+	watch = false
 )
 
 func main() {
-	watch := flag.Bool("watch", false, "Enable watcher mode")
+	flag.BoolVar(&watch, "watch", watch, "Enable watcher mode")
 	flag.Parse()
 
-	if err := run(*watch); err != nil {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	defer stop()
+
+	if err := run(ctx); err != nil {
 		slog.Error("failure", "error", err)
 		os.Exit(1)
 	}
 }
 
-func run(watch bool) error {
+func run(ctx context.Context) error {
+	eg, egctx := errgroup.WithContext(ctx)
+
+	eg.Go(func() error {
+		return build(egctx)
+	})
+
+	return eg.Wait()
+}
+
+func build(ctx context.Context) error {
 	opts := api.BuildOptions{
 		EntryPointsAdvanced: []api.EntryPoint{
 			{
@@ -31,7 +52,7 @@ func run(watch bool) error {
 				OutputPath: "libs/reverse-component",
 			},
 			/*
-				uncomment the entrypoint below after running pnpm install in the web/libs/lit directory
+				uncomment the entrypoint below after running pnpm install in the resources.LibsDirectoryPath + /lit directory
 				esbuild will only be able to find the lit + sortable libraries after doing so
 			*/
 			// {
@@ -46,39 +67,42 @@ func run(watch bool) error {
 		MinifySyntax:      true,
 		MinifyWhitespace:  true,
 		Outdir:            resources.StaticDirectoryPath,
-		Plugins: []api.Plugin{{
+		Sourcemap:         api.SourceMapLinked,
+		Target:            api.ESNext,
+		Write:             true,
+	}
+
+	if watch {
+		slog.Info("watching...")
+
+		opts.Plugins = append(opts.Plugins, api.Plugin{
 			Name: "hotreload",
 			Setup: func(build api.PluginBuild) {
 				build.OnEnd(func(result *api.BuildResult) (api.OnEndResult, error) {
 					slog.Info("build complete", "errors", len(result.Errors), "warnings", len(result.Warnings))
-					if watch && len(result.Errors) == 0 {
+					if len(result.Errors) == 0 {
 						http.Get(fmt.Sprintf("http://%s:%s/hotreload", config.Global.Host, config.Global.Port))
 					}
 					return api.OnEndResult{}, nil
 				})
 			},
-		}},
-		Sourcemap: api.SourceMapLinked,
-		Target:    api.ESNext,
-		Write:     true,
-	}
+		})
 
-	if watch {
-		slog.Info("Watching...")
-		ctx, err := api.Context(opts)
+		buildCtx, err := api.Context(opts)
 		if err != nil {
 			return err
 		}
+		defer buildCtx.Dispose()
 
-		if err := ctx.Watch(api.WatchOptions{}); err != nil {
+		if err := buildCtx.Watch(api.WatchOptions{}); err != nil {
 			return err
 		}
 
-		<-make(chan struct{})
+		<-ctx.Done()
 		return nil
 	}
 
-	slog.Info("Building...")
+	slog.Info("building...")
 
 	result := api.Build(opts)
 
