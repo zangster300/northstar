@@ -21,7 +21,7 @@ templ Base(title string) {
 		</head>
 		<body class="flex flex-col h-screen">
 			if config.Global.Environment == config.Dev {
-				<div data-on-load="@get('/reload', {retryMaxCount: 1000, retryInterval:20, retryMaxWaitMs:200})"></div>
+				<div data-init="@get('/reload', {retryMaxCount: 1000, retryInterval:20, retryMaxWaitMs:200})"></div>
 			}
 			{ children... }
 		</body>

@@ -20,7 +20,7 @@ templ MonitorPage() {
 		@components.Navigation(components.PageMonitor)
 		<div
 			id="container"
-			data-on-load={ datastar.GetSSE("/monitor/events") }
+			data-init={ datastar.GetSSE("/monitor/events") }
 			class="h-screen flex justify-center items-center"
 			data-signals="{memTotal:'', memUsed:'', memUsedPercent:'', cpuUser:'', cpuSystem:'', cpuIdle:''}"
 		>

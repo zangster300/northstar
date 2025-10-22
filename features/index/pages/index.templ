@@ -10,7 +10,7 @@ templ IndexPage(title string) {
 	@layouts.Base(title) {
 		<div class="flex flex-col w-full min-h-screen">
 			@components.Navigation(components.PageIndex)
-			<div id="todos-container" data-on-load={ datastar.GetSSE("/api/todos") }></div>
+			<div id="todos-container" data-init={ datastar.GetSSE("/api/todos") }></div>
 		</div>
 	}
 }

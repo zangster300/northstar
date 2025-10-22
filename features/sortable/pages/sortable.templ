@@ -19,10 +19,10 @@ templ SortablePage() {
 			</div>
 			<sortable-example
 				data-signals="{title: 'Item Info', info:'', items: [{name: `item one`}, {name: `item two`}, {name: `item three`}, {name: `item four`}, {name: `item five`}]}"
-				data-attr-title="$title"
-				data-attr-value="$info"
-				data-attr-items="JSON.stringify($items)"
-				data-on-change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
+				data-attr:title="$title"
+				data-attr:value="$info"
+				data-attr:items="JSON.stringify($items)"
+				data-on:change="event.detail && console.log(`Send this data somewhere else! ${event.detail}`)"
 			></sortable-example>
 			<script type="module" src={ resources.StaticPath("libs/sortable-example.js") }></script>
 		</article>

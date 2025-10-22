@@ -15,10 +15,10 @@ templ ReversePage() {
 			<div class="border border-primary rounded flex flex-col gap-2 p-8 w-80">
 				<label class="input">
 					<span class="label">Reverse</span>
-					<input type="text" data-bind-_name=""/>
+					<input type="text" data-bind:_name=""/>
 				</label>
-				<p class="truncate" data-signals-_reversed="" data-text="$_reversed"></p>
-				<reverse-component data-on-reverse="$_reversed = evt.detail.value" data-attr-name="$_name"></reverse-component>
+				<p class="truncate" data-signals:_reversed="" data-text="$_reversed"></p>
+				<reverse-component data-on:reverse="$_reversed = evt.detail.value" data-attr:name="$_name"></reverse-component>
 			</div>
 		</div>
 		<script type="module" src={ resources.StaticPath("libs/reverse-component.js") }></script>

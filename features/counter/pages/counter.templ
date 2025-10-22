@@ -15,13 +15,13 @@ templ CounterButtons() {
 	<div class="flex justify-around gap-4">
 		<button
 			class="btn btn-info"
-			data-on-click={ datastar.PostSSE("/counter/increment/global") }
+			data-on:click={ datastar.PostSSE("/counter/increment/global") }
 		>
 			Increment Global
 		</button>
 		<button
 			class="btn btn-success"
-			data-on-click={ datastar.PostSSE("/counter/increment/user") }
+			data-on:click={ datastar.PostSSE("/counter/increment/user") }
 		>
 			Increment User
 		</button>
@@ -56,7 +56,7 @@ templ CounterPage() {
 	@layouts.Base("Counter") {
 		@components.Navigation(components.PageCounter)
 		<article class="prose mx-auto m-2">
-			<div id="container" data-on-load={ datastar.GetSSE("/counter/data") }></div>
+			<div id="container" data-init={ datastar.GetSSE("/counter/data") }></div>
 		</article>
 	}
 }

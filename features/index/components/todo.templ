@@ -63,10 +63,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 						</p>
 					</div>
 					<div class="flex items-baseline gap-2 justify-center">
-						<h1 class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">todo's</h1>
-						<div class="flex items-baseline gap-2">
-							<h3 class="text-lg">example</h3>
-						</div>
+						<h1 class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">todo</h1>
 					</div>
 					<h2 class="text-center text-sm my-2">
 						The input is bound to a local store, but this is not a single page application.  It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
@@ -77,7 +74,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								<button
 									id="toggleAll"
 									class="btn btn-lg"
-									data-on-click={ datastar.PostSSE("/api/todos/-1/toggle") }
+									data-on:click={ datastar.PostSSE("/api/todos/-1/toggle") }
 									data-indicator="toggleAllFetching"
 									data-attrs-disabled="$toggleAllFetching"
 								>
@@ -117,7 +114,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								} else {
 									<button
 										class="btn btn-xs join-item"
-										data-on-click={ datastar.PutSSE("/api/todos/mode/%d", i) }
+										data-on:click={ datastar.PutSSE("/api/todos/mode/%d", i) }
 									>
 										{ TodoViewModeStrings[i] }
 									</button>
@@ -129,7 +126,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
 									<button
 										class="btn btn-error btn-xs join-item"
-										data-on-click={ datastar.DeleteSSE("/api/todos/-1") }
+										data-on:click={ datastar.DeleteSSE("/api/todos/-1") }
 									>
 										@common.Icon("material-symbols:delete")
 									</button>
@@ -138,7 +135,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 							<div class="tooltip" data-tip="Reset list">
 								<button
 									class="btn btn-warning btn-xs join-item"
-									data-on-click={ datastar.PutSSE("/api/todos/reset") }
+									data-on:click={ datastar.PutSSE("/api/todos/reset") }
 								>
 									@common.Icon("material-symbols:delete-sweep")
 								</button>
@@ -160,14 +157,14 @@ templ TodoInput(i int) {
 		data-testid="todos_input"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
-		data-bind-input
-		data-on-keydown={ fmt.Sprintf(`
+		data-bind:input
+		data-on:keydown={ fmt.Sprintf(`
 			if (evt.key !== 'Enter' || !$input.trim().length) return;
 			%s;
 			$input = '';
 		`, datastar.PutSSE("/api/todos/%d/edit",i) ) }
 		if i >= 0 {
-			data-on-click__outside={ datastar.PutSSE("/api/todos/cancel") }
+			data-on:click__outside={ datastar.PutSSE("/api/todos/cancel") }
 		}
 	/>
 }
@@ -187,7 +184,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			<label
 				id={ fmt.Sprintf("toggle%d", i) }
 				class="text-4xl cursor-pointer"
-				data-on-click={ datastar.PostSSE("/api/todos/%d/toggle", i) }
+				data-on:click={ datastar.PostSSE("/api/todos/%d/toggle", i) }
 				data-indicator={ fetchingSignalName }
 			>
 				if todo.Completed {
@@ -199,7 +196,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			<label
 				id={ indicatorID }
 				class="flex-1 text-lg cursor-pointer select-none"
-				data-on-click={ datastar.GetSSE("/api/todos/%d/edit", i) }
+				data-on:click={ datastar.GetSSE("/api/todos/%d/edit", i) }
 				data-indicator={ fetchingSignalName }
 			>
 				{ todo.Text }
@@ -208,7 +205,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			<button
 				id={ fmt.Sprintf("delete%d", i) }
 				class="invisible btn btn-error group-hover:visible"
-				data-on-click={ datastar.DeleteSSE("/api/todos/%d", i) }
+				data-on:click={ datastar.DeleteSSE("/api/todos/%d", i) }
 				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 				data-indicator={ fetchingSignalName }
 				data-attrs-disabled={ fetchingSignalName + "" }
