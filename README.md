@@ -81,6 +81,14 @@ docker build -t northstar:latest .
 docker run --name northstar -p 8080:9001 northstar:latest
 ```
 
+## Nix
+```shell
+# Load the environment and dev dependencies 
+nix develop
+
+go tool task live
+```
+
 [Dockerfile](./Dockerfile)
 
 # Contributing
