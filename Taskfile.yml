@@ -14,7 +14,7 @@ tasks:
     generates:
       - "**/*_templ.go"
 
-  build:styles:
+  build:web:styles:
     cmds:
       - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css
     sources:
@@ -22,7 +22,7 @@ tasks:
     generates:
       - "{{.STATIC_DIR}}/index.css"
 
-  build:wc:
+  build:web:bundle:
     cmds:
       - go run cmd/web/build/main.go
     sources:
@@ -35,8 +35,8 @@ tasks:
       - go build -tags=prod -o bin/main ./cmd/web
     deps:
       - build:templ
-      - build:styles
-      - build:wc
+      - build:web:styles
+      - build:web:bundle
 
   # Use this task to debug with the delve debugger
   debug:
@@ -55,11 +55,11 @@ tasks:
     cmds:
       - go tool templ generate -watch
 
-  live:styles:
+  live:web:styles:
     cmds:
       - go tool gotailwind -i web/resources/styles/styles.css -o $STATIC_DIR/index.css -w
 
-  live:wc:
+  live:web:bundle:
     cmds:
       - go run cmd/web/build/main.go -watch
 
@@ -76,8 +76,8 @@ tasks:
   live:
     deps:
       - live:templ
-      - live:styles
-      - live:wc
+      - live:web:styles
+      - live:web:bundle
       - live:server
 
   run:
