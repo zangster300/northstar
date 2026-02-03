@@ -46,7 +46,7 @@ go tool task debug
 
 ## IDE Support
 
-- [Templ / TailwindCSS Support](https://templ.guide/commands-and-tools/ide-support)
+- [Templ / TailwindCSS Support](https://templ.guide/developer-tools/ide-support/)
 
 ### Visual Studio Code Integration
 
