@@ -48,7 +48,7 @@ tasks:
   # Use this task to download latest version of client libs
   download:
     cmds:
-      - go run cmd/downloader/main.go
+      - go run cmd/web/downloader/main.go
 
   # The `live:` tasks below are used together for development builds and will live-reload the server
   live:templ:
