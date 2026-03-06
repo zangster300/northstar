@@ -9,8 +9,8 @@ import (
 
 	"northstar/features/index/components"
 
-	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/embeddednats"
+	"github.com/delaneyj/toolbelt/id"
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
@@ -168,15 +168,15 @@ func (s *TodoService) upsertSessionID(r *http.Request, w http.ResponseWriter) (s
 		return "", fmt.Errorf("failed to get session: %w", err)
 	}
 
-	id, ok := sess.Values["id"].(string)
+	ident, ok := sess.Values["id"].(string)
 
 	if !ok {
-		id = toolbelt.NextEncodedID()
-		sess.Values["id"] = id
+		ident = id.NextEncodedID()
+		sess.Values["id"] = ident
 		if err := sess.Save(r, w); err != nil {
 			return "", fmt.Errorf("failed to save session: %w", err)
 		}
 	}
 
-	return id, nil
+	return ident, nil
 }

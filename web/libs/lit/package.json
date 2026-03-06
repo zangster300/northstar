@@ -7,12 +7,12 @@
     "build": "tsc"
   },
   "dependencies": {
-    "lit": "^3.3.1",
-    "sortablejs": "^1.15.6"
+    "lit": "^3.3.2",
+    "sortablejs": "^1.15.7"
   },
   "devDependencies": {
-    "@types/node": "^24.8.1",
-    "@types/sortablejs": "^1.15.8",
+    "@types/node": "^25.3.5",
+    "@types/sortablejs": "^1.15.9",
     "typescript": "^5.9.3"
   }
 }

@@ -16,19 +16,14 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httplog/v3"
 	"github.com/gorilla/sessions"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
-
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: config.Global.LogLevel,
-	}))
-	slog.SetDefault(logger)
 
 	if err := run(ctx); err != nil && err != http.ErrServerClosed {
 		slog.Error("error running server", "error", err)
@@ -37,6 +32,10 @@ func main() {
 }
 
 func run(ctx context.Context) error {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: config.Global.LogLevel,
+	}))
+	slog.SetDefault(logger)
 
 	addr := fmt.Sprintf("%s:%s", config.Global.Host, config.Global.Port)
 	slog.Info("server started", "addr", addr)
@@ -46,7 +45,7 @@ func run(ctx context.Context) error {
 
 	r := chi.NewMux()
 	r.Use(
-		middleware.Logger,
+		httplog.RequestLogger(logger, nil),
 		middleware.Recoverer,
 	)
 
