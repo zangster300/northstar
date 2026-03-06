@@ -11,7 +11,6 @@ import (
 	"northstar/router"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -22,26 +21,21 @@ import (
 )
 
 func main() {
-	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer cancel()
-
-	if err := run(ctx); err != nil && err != http.ErrServerClosed {
-		slog.Error("error running server", "error", err)
+	ctx := context.Background()
+	if err := run(ctx); err != nil {
+		slog.Error("server failure", "error", err)
 		os.Exit(1)
 	}
 }
 
 func run(ctx context.Context) error {
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: config.Global.LogLevel,
 	}))
 	slog.SetDefault(logger)
-
-	addr := fmt.Sprintf("%s:%s", config.Global.Host, config.Global.Port)
-	slog.Info("server started", "addr", addr)
-	defer slog.Info("server shutdown complete")
-
-	eg, egctx := errgroup.WithContext(ctx)
 
 	r := chi.NewMux()
 	r.Use(
@@ -61,15 +55,18 @@ func run(ctx context.Context) error {
 		return err
 	}
 
+	eg, egctx := errgroup.WithContext(ctx)
+
 	if err := router.SetupRoutes(egctx, r, sessionStore, ns); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 
+	addr := fmt.Sprintf("%s:%s", config.Global.Host, config.Global.Port)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: r,
 		BaseContext: func(l net.Listener) context.Context {
-			return egctx
+			return ctx
 		},
 		ErrorLog: slog.NewLogLogger(
 			slog.Default().Handler(),
@@ -78,23 +75,28 @@ func run(ctx context.Context) error {
 	}
 
 	eg.Go(func() error {
+		slog.Info("server started", "addr", srv.Addr)
 		err := srv.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			return fmt.Errorf("server error: %w", err)
+
+		if err == nil || err == http.ErrServerClosed {
+			return nil
 		}
-		return nil
+
+		return fmt.Errorf("server error: %w", err)
 	})
 
 	eg.Go(func() error {
 		<-egctx.Done()
+
+		slog.Debug("shutdown signal received")
+
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		slog.Debug("shutting down server...")
 
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			slog.Error("error during shutdown", "error", err)
-			return err
+			return fmt.Errorf("server shutdown error: %w", err)
 		}
 
 		return nil
