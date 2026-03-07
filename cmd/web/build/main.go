@@ -11,10 +11,8 @@ import (
 	"northstar/web/resources"
 	"os"
 	"os/signal"
-	"syscall"
 
 	"github.com/evanw/esbuild/pkg/api"
-	"golang.org/x/sync/errgroup"
 )
 
 var (
@@ -22,12 +20,10 @@ var (
 )
 
 func main() {
-	flag.BoolVar(&watch, "watch", watch, "Enable watcher mode")
+	flag.BoolVar(&watch, "watch", false, "Enable watcher mode")
 	flag.Parse()
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
-	defer stop()
-
+	ctx := context.Background()
 	if err := run(ctx); err != nil {
 		slog.Error("failure", "error", err)
 		os.Exit(1)
@@ -35,13 +31,10 @@ func main() {
 }
 
 func run(ctx context.Context) error {
-	eg, egctx := errgroup.WithContext(ctx)
+	sctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
 
-	eg.Go(func() error {
-		return build(egctx)
-	})
-
-	return eg.Wait()
+	return build(sctx)
 }
 
 func build(ctx context.Context) error {
