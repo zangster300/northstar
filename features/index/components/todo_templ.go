@@ -70,7 +70,7 @@ func TodosMVCView(mvc *TodoMVC) templ.Component {
 		if mvc.EditingIdx >= 0 {
 			input = mvc.Todos[mvc.EditingIdx].Text
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"todos-container\" class=\"h-full relative border border-solid border-primary rounded p-2 my-2 mx-28\"><div class=\"flex flex-col w-full gap-4\" data-signals=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"todos-container\" class=\"h-full relative border border-solid border-primary rounded p-2 mt-5 mx-28\"><div class=\"flex flex-col w-full gap-4\" data-signals=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

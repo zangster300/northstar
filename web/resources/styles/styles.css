@@ -7,23 +7,47 @@
 */
 
 @plugin "./daisyui/daisyui.js" {
-    themes: light --default, dark --prefersdark;
+  themes:
+    light --default,
+    dark --prefersdark;
 }
 
 @plugin "./daisyui/daisyui-theme.js" {
-    name: "datastar";
+  name: "light";
 
-    --color-base-100: "#0b1325";
-    --color-base-200: "#1e304a";
-    --color-base-300: "#3a506b";
-    --color-primary: "#c9a75f";
-    --color-secondary: "#bfdbfe";
-    --color-accent: "#7dd3fc";
-    --color-neutral: "#444";
-    --color-neutral-content: "#fff";
-    --color-info: "#0369a1";
-    --color-success: "#69c383";
-    --color-warning: "#facc15";
-    --color-error: "#e11d48";
-  
+  --color-base-100: "#f8fafc";
+  --color-base-200: "#DBDBDB";
+  --color-base-300: "#e2e8f0";
+
+  --color-primary: "#3f6f9f";
+  --color-secondary: "#64748b";
+  --color-accent: "#4f91b8";
+
+  --color-neutral: "#334155";
+  --color-neutral-content: "#f8fafc";
+
+  --color-info: "#4f91b8";
+  --color-success: "#4f9d78";
+  --color-warning: "#b88932";
+  --color-error: "#c45c63";
+}
+
+@plugin "./daisyui/daisyui-theme.js" {
+  name: "dark";
+
+  --color-base-100: "#080c14";
+  --color-base-200: "#0d131f";
+  --color-base-300: "#151d2b";
+
+  --color-primary: "#4b83c4";
+  --color-secondary: "#64748b";
+  --color-accent: "#4f91b8";
+
+  --color-neutral: "#252f3f";
+  --color-neutral-content: "#cbd5e1";
+
+  --color-info: "#4f91b8";
+  --color-success: "#4f9d78";
+  --color-warning: "#c49a4a";
+  --color-error: "#c45c63";
 }
