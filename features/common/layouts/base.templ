@@ -18,12 +18,35 @@ templ Base(title string) {
 			<link rel="icon" type="image/x-icon" href={ resources.StaticPath("assets/favicon.ico") }/>
 			<script defer type="module" src={ resources.StaticPath("datastar/datastar.js") }></script>
 			<link href={ resources.StaticPath("index.css") } rel="stylesheet" type="text/css"/>
+		    <script src={ resources.StaticPath("libs/theme-bootstrap.js") }></script>
 		</head>
-		<body class="flex flex-col h-screen">
+		<body class="flex flex-col min-h-screen">
 			if config.Global.Environment == config.Dev {
 				<div data-init="@get('/reload', {retryMaxCount: Infinity, retryInterval:20, retryMaxWaitMs:200})"></div>
 			}
-			{ children... }
+
+			<!-- Theme switcher (uses web/libs/web-components/theme-controller -> built to web/resources/static/libs/theme-controller.js) -->
+			<div class="relative w-full">
+				<div class="mx-auto max-w-5xl">
+                	{ children... }
+				</div>
+
+                <div class="absolute top-3 right-3">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-circle"
+                        aria-label="Change the theme"
+                        onclick="window.themeController?.toggleTheme()"
+                    >
+                        <iconify-icon
+                            icon="mdi:theme-light-dark"
+                            width="20"
+                            height="20"
+                        ></iconify-icon>
+                    </button>
+                </div>
+            </div>
+			<script type="module" defer src={ resources.StaticPath("libs/theme-controller.js") }></script>
 		</body>
 	</html>
 }

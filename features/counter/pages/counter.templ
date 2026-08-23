@@ -55,7 +55,7 @@ templ Counter(signals CounterSignals) {
 templ CounterPage() {
 	@layouts.Base("Counter") {
 		@components.Navigation(components.PageCounter)
-		<article class="prose mx-auto m-2">
+		<article class="prose mx-auto mt-5">
 			<div id="container" data-init={ datastar.GetSSE("/counter/data") }></div>
 		</article>
 	}

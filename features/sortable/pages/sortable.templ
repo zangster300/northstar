@@ -9,8 +9,8 @@ import (
 templ SortablePage() {
 	@layouts.Base("Sortable") {
 		@components.Navigation(components.PageSortable)
-		<article class="prose mx-auto pt-2 flex flex-col gap-2">
-			<div class="alert alert-warning text-center">
+		<article class="prose mx-auto pt-2 flex flex-col gap-2 mt-5">
+			<div class="alert alert-warning text-center max-w-3xl mx-auto">
 				@components.Icon("material-symbols:warning")
 				<div class="flex flex-col gap-2">
 					<span>This example uses <a class="link" href="https://lit.dev/">lit</a> and <a class="link" href="https://github.com/SortableJS/Sortable">SortableJS</a>, you will need to download both libraries before this example will work</span>

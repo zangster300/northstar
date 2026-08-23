@@ -44,7 +44,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 			input = mvc.Todos[mvc.EditingIdx].Text
 		}
 	}}
-	<div id="todos-container" class="h-full relative border border-solid border-primary rounded p-2 my-2 mx-28">
+	<div id="todos-container" class="h-full relative border border-solid border-primary rounded p-2 mt-5 mx-28">
 		<div
 			class="flex flex-col w-full gap-4"
 			data-signals={ fmt.Sprintf("{input:'%s'}", input) }
